@@ -1,0 +1,64 @@
+@import '../../styles/variables.scss';
+
+.drug {
+	border-radius: 10px;
+	width: 250px;
+	box-shadow: 0 0 5px $colorSecondary;
+
+	@media (max-width: 535px) {
+		width: 300px;
+	}
+
+	&Img {
+		height: 150px;
+		overflow: hidden;
+		border-radius: 10px 10px 0 0;
+		display: flex;
+		justify-content: center;
+		align-items: center;
+
+		&>img {
+			width: 100%;
+		}
+
+		@media (max-width: 535px) {
+			display: none;
+		}
+	}
+
+	&Desc {
+		margin: 10px;
+
+		&Title {
+			font-weight: bold;
+		}
+
+		&Type {
+			text-align: right;
+			color: $colorSecondary;
+		}
+
+		&Categories {
+			margin-top: 15px;
+			padding-top: 5px;
+			border-top: 1px solid $colorSecondary;
+			color: grey;
+		}
+
+		&Category {
+			display: inline-block;
+			padding: 0 5px;
+			margin: 1px;
+			border: 1px solid $colorSecondary;
+			font-size: 12px;
+			border-radius: 10px;
+			background-color: $colorThird;
+			text-transform: uppercase;
+		}
+	}
+
+	&Name {
+		text-align: center;
+		color: $colorPrimary;
+	}
+}

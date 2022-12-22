@@ -1,0 +1,14 @@
+.drugs {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 15px;
+	padding: 10px 0 0 10px;
+
+	@media (max-width: 845px) {
+		padding: 10px 0 0;
+	}
+
+	@media (max-width: 535px) {
+		gap: 10px;
+	}
+}

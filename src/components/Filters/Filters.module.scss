@@ -1,0 +1,42 @@
+@import '../../styles/variables.scss';
+
+.form {
+	min-width: 300px;
+	border-right: 2px solid $colorSecondary;
+	padding-top: 10px;
+
+	@media (max-width: 845px) {
+		border: none;
+		border-bottom: 2px solid $colorSecondary;
+		padding-bottom: 10px;
+	}
+
+	&Filters {
+		&List {
+			margin: 10px 0;
+
+			@media (max-width: 845px) {
+				columns: 2;
+			}
+
+			@media (max-width: 535px) {
+				columns: 1;
+			}
+		}
+
+		&Item {
+			margin-bottom: 5px;
+		}
+
+		&Label {
+			cursor: pointer;
+			display: flex;
+			gap: 10px;
+			align-items: center;
+
+			&:hover {
+				color: $colorPrimary;
+			}
+		}
+	}
+}

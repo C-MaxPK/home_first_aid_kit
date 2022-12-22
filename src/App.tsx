@@ -1,56 +1,26 @@
-import React from 'react';
-import logo from './logo.svg';
-import { Counter } from './features/counter/Counter';
-import './App.css';
+import Search from './components/Search/Search';
+import Filters from './components/Filters/Filters';
+import Drugs from './components/Drugs/Drugs';
+import Logo from './logo.png';
+import './App.scss';
 
+
+// http://fkn.ktu10.com/?q=node/12450 хук для отслежки ширины экрана
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <Counter />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <span>
-          <span>Learn </span>
-          <a
-            className="App-link"
-            href="https://reactjs.org/"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            React
-          </a>
-          <span>, </span>
-          <a
-            className="App-link"
-            href="https://redux.js.org/"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Redux
-          </a>
-          <span>, </span>
-          <a
-            className="App-link"
-            href="https://redux-toolkit.js.org/"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Redux Toolkit
-          </a>
-          ,<span> and </span>
-          <a
-            className="App-link"
-            href="https://react-redux.js.org/"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            React Redux
-          </a>
-        </span>
+    <div className='app'>
+
+      <header className='header'>
+        <img src={Logo} alt="Логотип" />
+        <Search />
+        {/* <button>Добавить лекарство</button> */}
       </header>
+
+      <main className='main'>
+        <Filters />
+        <Drugs />
+      </main>
+
     </div>
   );
 }

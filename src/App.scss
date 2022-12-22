@@ -1,0 +1,45 @@
+@import './styles/variables.scss';
+
+.app {
+  // min-width: 365px;
+  max-width: 1640px;
+  margin: 0 auto;
+  padding: 10px;
+
+  @media (max-width: 1640px) {
+    width: 1375px;
+  }
+
+  @media (max-width: 1375px) {
+    width: 1110px;
+  }
+
+  @media (max-width: 1110px) {
+    width: 845px;
+  }
+
+  @media (max-width: 845px) {
+    width: 535px;
+  }
+
+  @media (max-width: 535px) {
+    width: 320px;
+    // border: 1px solid #000;
+  }
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  border-bottom: 2px solid $colorSecondary;
+  padding-bottom: 10px;
+}
+
+.main {
+  display: flex;
+
+  @media (max-width: 845px) {
+    display: block;
+  }
+}
