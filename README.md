@@ -3,4 +3,4 @@
 ### установка `npm install`
 ### запуск `npm start`
 
-[ДЕМО](http://localhost:3000)
+[ДЕМО](https://home-first-aid-kit.vercel.app/)

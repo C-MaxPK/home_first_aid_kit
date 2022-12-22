@@ -19,7 +19,7 @@ const Drug = ({ drug }: IDrugProps): JSX.Element => {
 					{drug.type}
 				</div>
 				<div >
-					<span className={styles.drugDescTitle}>Остаток:</span> {drug.amount} {drug.package}
+					<span className={styles.drugDescTitle}>Остаток:</span> <span className={styles.drugDescValue}>{drug.amount} {drug.package}</span>
 				</div>
 
 				<div>

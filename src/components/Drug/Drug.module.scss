@@ -33,6 +33,10 @@
 			font-weight: bold;
 		}
 
+		&Value {
+			text-transform: lowercase;
+		}
+
 		&Type {
 			text-align: right;
 			color: $colorSecondary;
@@ -43,6 +47,7 @@
 			padding-top: 5px;
 			border-top: 1px solid $colorSecondary;
 			color: grey;
+			text-align: center;
 		}
 
 		&Category {
