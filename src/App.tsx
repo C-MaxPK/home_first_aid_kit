@@ -4,7 +4,6 @@ import Drugs from './components/Drugs/Drugs';
 import Logo from './logo.png';
 import './App.scss';
 
-
 // http://fkn.ktu10.com/?q=node/12450 хук для отслежки ширины экрана
 function App() {
   return (

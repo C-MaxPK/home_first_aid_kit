@@ -52,14 +52,25 @@ export const drugSlice = createSlice({
       const regexp = new RegExp(action.payload, 'i'); // регулярка с введенными данными из input
       state.drugListSearch = state.drugList.filter(drug => regexp.test(drug.name)); // оставляем в списке по поиску - что подошло
     },
-    // фильтрация по поиску
-    drugFiltration: (state, action: PayloadAction<string[]>) => {
+    // фильтрация по действию из поиска
+    drugFiltrationByAction: (state, action: PayloadAction<string[]>) => {
       state.filterStatus = true; // статус фильтрации - включаем
       let arr: IDrug[] = []; // времянка
       // перебираем список чекнутых категорий
       action.payload.forEach(actionName => {
         // добавляем во времянку отфильтрованные лекарства из списка по поиску, которые: отсутствуют во времянке и содержат чекнутую категорию
         arr.push(...state.drugListSearch.filter(drug => !arr.includes(drug) && drug.categories.includes(actionName)));
+      });
+      state.drugListFilter = [...arr]; // заменяем список фильтрованных лекарств времянкой 
+    },
+    // фильтрация по типу из поиска
+    drugFiltrationByType: (state, action: PayloadAction<string[]>) => {
+      state.filterStatus = true; // статус фильтрации - включаем
+      let arr: IDrug[] = []; // времянка
+      // перебираем список чекнутых категорий
+      action.payload.forEach(typeName => {
+        // добавляем во времянку отфильтрованные лекарства из списка по поиску, которые: отсутствуют во времянке и содержат чекнутую категорию
+        arr.push(...state.drugListSearch.filter(drug => !arr.includes(drug) && drug.type === typeName));
       });
       state.drugListFilter = [...arr]; // заменяем список фильтрованных лекарств времянкой 
     },
@@ -80,7 +91,7 @@ export const drugSlice = createSlice({
   },
 });
 
-export const { clearFilters, drugFiltration, drugSearch } = drugSlice.actions;
+export const { clearFilters, drugFiltrationByAction, drugFiltrationByType, drugSearch } = drugSlice.actions;
 
 export const selectDrugState = (state: RootState) => state.drug;
 export const selectDrugListSearch = (state: RootState) => state.drug.drugListSearch;

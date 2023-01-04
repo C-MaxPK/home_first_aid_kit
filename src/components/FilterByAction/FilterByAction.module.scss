@@ -1,0 +1,57 @@
+@import '../../styles/variables.scss';
+
+.form {
+	width: 298px;
+	padding: 10px 0;
+	flex-shrink: 0;
+	border-bottom: 1px dashed $colorSecondary;
+
+	@media (max-width: 845px) {
+		width: 515px;
+		padding-bottom: 10px;
+	}
+
+	@media (max-width: 535px) {
+		width: 355px;
+	}
+
+	&Title {
+		padding-right: 10px;
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
+		gap: 5px;
+		cursor: pointer;
+	}
+
+	&Filters {
+		&List {
+			margin: 10px 0 0;
+			max-height: 250px;
+			overflow: auto;
+
+			@media (max-width: 845px) {
+				columns: 2;
+			}
+
+			@media (max-width: 535px) {
+				columns: 1;
+			}
+		}
+
+		&Item {
+			margin-bottom: 5px;
+		}
+
+		&Label {
+			cursor: pointer;
+			display: flex;
+			gap: 10px;
+			align-items: center;
+
+			&:hover {
+				color: $colorPrimary;
+			}
+		}
+	}
+}

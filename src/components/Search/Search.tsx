@@ -14,7 +14,6 @@ const Search = (): JSX.Element => {
 		if (filterStatus) {
 			dispatch(clearFilters());
 		}
-		// inputValue !== '' && dispatch(drugSearch(inputValue));
 		// поиск по введенным данным  в input
 		dispatch(drugSearch(inputValue));
 	}, [dispatch, inputValue]);
