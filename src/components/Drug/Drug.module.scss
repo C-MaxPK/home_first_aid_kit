@@ -3,10 +3,11 @@
 .drug {
 	border-radius: 10px;
 	width: 250px;
+	max-height: 450px;
 	box-shadow: 0 0 5px $colorSecondary;
 
 	@media (max-width: 535px) {
-		width: 300px;
+		width: 375px;
 	}
 
 	&Img {

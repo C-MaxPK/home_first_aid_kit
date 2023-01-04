@@ -1,7 +1,6 @@
 @import './styles/variables.scss';
 
 .app {
-  // min-width: 365px;
   max-width: 1640px;
   margin: 0 auto;
   padding: 10px;
@@ -23,8 +22,7 @@
   }
 
   @media (max-width: 535px) {
-    width: 320px;
-    // border: 1px solid #000;
+    width: 375px;
   }
 }
 

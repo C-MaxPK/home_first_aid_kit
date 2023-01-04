@@ -26,7 +26,7 @@ const Drug = ({ drug }: IDrugProps): JSX.Element => {
 					<span className={styles.drugDescTitle}>Годен до:</span> {drug.sellBy}
 				</div>
 
-				<div className={styles.drugDescCategories}>
+				<div className={drug.categories.length > 0 ? styles.drugDescCategories : ''}>
 					{drug.categories.map(category => (
 						<span className={styles.drugDescCategory} key={category}>{category} </span>
 					))}

@@ -1,26 +1,21 @@
 import { ChangeEvent, useEffect, useState } from 'react';
 import { useForm } from "react-hook-form";
-import FormControlLabel from '@mui/material/FormControlLabel';
-import Checkbox from '@mui/material/Checkbox';
 import Button from '@mui/material/Button';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
-import { clearFilters, drugFiltration, selectDrugListSearch, selectFilterStatus } from '../../store/drugSlice';
+import { clearFilters, drugFiltration, selectDrugListSearch, selectDrugState, selectFilterStatus } from '../../store/drugSlice';
 import styles from './Filters.module.scss';
 
 const Filters = (): JSX.Element => {
 	const [checkboxFilter, setCheckboxFilter] = useState<string[]>([]); // список чекнутых категорий
 	const dispatch = useAppDispatch();
-	const drugListSearch = useAppSelector(selectDrugListSearch); // из state список лекарств по поиску
-	const filterStatus = useAppSelector(selectFilterStatus); // фильтрация в работе?
+	const drugState = useAppSelector(selectDrugState); // весь state
 	const { register, reset } = useForm(); // регистрация и сброс от useForm
-	const categorySort: string[] = []; // список категорий для фильтрации
-
-	const label = { inputProps: { 'aria-label': 'Checkbox demo' } };
+	const categorySort: string[] = []; // список категорий для фильтрации;
 
 	// следит за списком чекнутых категорий
 	useEffect(() => {
 		// если этот список пустой и статус фильтрации - в работе то очищаем фильтры
-		if (checkboxFilter.length === 0 && filterStatus) {
+		if (checkboxFilter.length === 0 && drugState.filterStatus) {
 			dispatch(clearFilters());
 			// иначе если список имеет хотя бы одну запись - фильтруем список
 		} else if (checkboxFilter.length > 0) {
@@ -31,8 +26,8 @@ const Filters = (): JSX.Element => {
 	// следит за статусом работы фильтрации
 	useEffect(() => {
 		// если фильтрация НЕ в работе - обнуляем форму
-		!filterStatus && checkboxFilter.length > 1 && resetHandler();
-	}, [filterStatus]);
+		!drugState.filterStatus && checkboxFilter.length > 1 && resetHandler();
+	}, [drugState.filterStatus]);
 
 	// обработчик изминения чекбокса
 	const changeHandler = (e: ChangeEvent<HTMLInputElement>): void => {
@@ -56,7 +51,7 @@ const Filters = (): JSX.Element => {
 	};
 
 	// в потоке перебираем список лекарст по поиску и добавляем в список категорий для фильтрации не повторяющиеся категории из всех лекарств
-	drugListSearch.forEach(drug => {
+	drugState.drugListSearch.forEach(drug => {
 		drug.categories.forEach(category => {
 			if (!categorySort.includes(category)) {
 				categorySort.push(category);
@@ -69,6 +64,7 @@ const Filters = (): JSX.Element => {
 			<h4 className={styles.formTitle}>Действие:</h4>
 			<ul className={styles.formFiltersList}>
 
+				{drugState.drugListSearch.length === 0 && drugState.fetchStatus === 'idle' && <div>не найдено</div>}
 				{categorySort.map(category => (
 					<li key={category} className={styles.formFiltersItem}>
 						<label className={styles.formFiltersLabel}>
@@ -79,7 +75,7 @@ const Filters = (): JSX.Element => {
 				))}
 
 			</ul>
-			{filterStatus && <Button variant="outlined" color="success" size="small" onClick={resetHandler}>Очистить</Button>}
+			{drugState.filterStatus && <Button variant="outlined" color="success" size="small" onClick={resetHandler} sx={{ marginTop: '10px' }}>Очистить</Button>}
 		</form>
 	);
 };
