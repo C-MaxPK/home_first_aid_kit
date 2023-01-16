@@ -1,4 +1,5 @@
 import { IDrug } from '../../store/drugSlice';
+import { declination } from '../../helpers/helpers';
 import styles from './Drug.module.scss';
 
 interface IDrugProps {
@@ -19,7 +20,7 @@ const Drug = ({ drug }: IDrugProps): JSX.Element => {
 					{drug.type}
 				</div>
 				<div >
-					<span className={styles.drugDescTitle}>Остаток:</span> <span className={styles.drugDescValue}>{drug.amount} {drug.package}</span>
+					<span className={styles.drugDescTitle}>Остаток:</span> <span>{drug.amount} {declination(drug.amount, drug.package)}</span>
 				</div>
 
 				<div>
