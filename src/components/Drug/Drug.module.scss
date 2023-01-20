@@ -86,5 +86,9 @@
 		border-radius: 5px;
 		box-shadow: 0 0 20px $colorDanger;
 		backdrop-filter: blur(0.5px);
+
+		@media (max-width: 535px) {
+			transform: translate(-50%, -50%) rotate(-25deg);
+		}
 	}
 }
