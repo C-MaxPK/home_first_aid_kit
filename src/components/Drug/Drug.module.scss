@@ -5,9 +5,14 @@
 	width: 250px;
 	max-height: 450px;
 	box-shadow: 0 0 5px $colorSecondary;
+	position: relative;
 
 	@media (max-width: 535px) {
 		width: 375px;
+	}
+
+	&NoSellBy {
+		box-shadow: 0 0 5px $colorWarning;
 	}
 
 	&Img {
@@ -32,6 +37,10 @@
 
 		&Title {
 			font-weight: bold;
+
+			&NoSellBy {
+				color: $colorWarning;
+			}
 		}
 
 		&Type {
@@ -62,5 +71,20 @@
 	&Name {
 		text-align: center;
 		color: $colorPrimary;
+	}
+
+	&SignOverdue {
+		position: absolute;
+		padding: 0 5px 5px;
+		top: 50%;
+		left: 50%;
+		color: $colorDanger;
+		background: rgba(255, 255, 255, 0.5);
+		font-size: 32px;
+		text-align: center;
+		transform: translate(-50%, -50%) rotate(-45deg);
+		border-radius: 5px;
+		box-shadow: 0 0 20px $colorDanger;
+		backdrop-filter: blur(0.5px);
 	}
 }
