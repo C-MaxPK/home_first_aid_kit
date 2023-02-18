@@ -1,18 +1,22 @@
+import { useState } from 'react';
 import Search from './components/Search/Search';
+// import Sort from './components/Sort/Sort';
 import Filters from './components/Filters/Filters';
 import Drugs from './components/Drugs/Drugs';
 import Logo from './logo.png';
+import { ActiveSortType } from './types/types';
 import './App.scss';
 
-// http://fkn.ktu10.com/?q=node/12450 хук для отслежки ширины экрана
 function App() {
+  const [activeSort, setActiveSort] = useState<ActiveSortType>(null); // активная сортировка
+
   return (
     <div className='app'>
 
       <header className='header'>
         <img src={Logo} alt="Логотип" />
-        <Search />
-        {/* <button>Добавить лекарство</button> */}
+        <Search activeSort={activeSort} setActiveSort={setActiveSort} />
+        {/* <Sort activeSort={activeSort} setActiveSort={setActiveSort} /> */}
       </header>
 
       <main className='main'>

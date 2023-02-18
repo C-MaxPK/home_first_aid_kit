@@ -21,8 +21,9 @@ const getSetOfWordsForDeclension = (title: string): [string, string, string] => 
 	}
 };
 
+// функция для склонения слов
 export const declination = (number: number, title: string): string => {
 	const setOfWords = getSetOfWordsForDeclension(title.toLowerCase());
 	const cases = [2, 0, 1, 1, 1, 2];
-	return setOfWords[(number % 100 > 4 && number % 100 < 20) ? 2 : cases[(number % 100 < 5 ? number % 10 : 5)]];
+	return setOfWords[(number % 100 > 4 && number % 100 < 20) ? 2 : cases[(number % 10 < 5 ? number % 10 : 5)]];
 };

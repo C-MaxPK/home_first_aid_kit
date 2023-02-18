@@ -1,23 +1,6 @@
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { IDrug, IDrugState } from '../types/types';
 import { RootState } from './store';
-
-export interface IDrug {
-  id: number; // или string (uid)
-  name: string;
-  type: string; // или ENUM
-  amount: number;
-  package: string;  // или ENUM
-  categories: string[];  // или массив Типов
-  sellBy: string; // или Date
-}
-
-export interface IDrugState {
-  drugList: IDrug[];
-  drugListSearch: IDrug[];
-  drugListFilter: IDrug[];
-  fetchStatus: 'idle' | 'loading' | 'failed';
-  filterStatus: boolean;
-}
 
 const initialState: IDrugState = {
   drugList: [], // список лекарств, полученный из БД
@@ -74,6 +57,30 @@ export const drugSlice = createSlice({
       });
       state.drugListFilter = [...arr]; // заменяем список фильтрованных лекарств времянкой 
     },
+    // сортировка по возрастанию
+    drugSortAsc: (state, action: PayloadAction<'filter' | 'search'>) => {
+      (action.payload === 'search' ? state.drugListSearch : state.drugListFilter).sort((a, b) => {
+        if (a.name > b.name) {
+          return 1;
+        }
+        if (a.name < b.name) {
+          return -1;
+        }
+        return 0;
+      });
+    },
+    // сортировка по убыванию
+    drugSortDesc: (state, action: PayloadAction<'filter' | 'search'>) => {
+      (action.payload === 'search' ? state.drugListSearch : state.drugListFilter).sort((a, b) => {
+        if (a.name < b.name) {
+          return 1;
+        }
+        if (a.name > b.name) {
+          return -1;
+        }
+        return 0;
+      });
+    }
   },
   extraReducers: (builder) => {
     builder
@@ -91,7 +98,7 @@ export const drugSlice = createSlice({
   },
 });
 
-export const { clearFilters, drugFiltrationByAction, drugFiltrationByType, drugSearch } = drugSlice.actions;
+export const { clearFilters, drugFiltrationByAction, drugFiltrationByType, drugSearch, drugSortAsc, drugSortDesc } = drugSlice.actions;
 
 export const selectDrugState = (state: RootState) => state.drug;
 export const selectDrugListSearch = (state: RootState) => state.drug.drugListSearch;

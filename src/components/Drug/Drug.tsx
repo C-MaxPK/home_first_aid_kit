@@ -1,29 +1,28 @@
-import { IDrug } from '../../store/drugSlice';
 import { declination } from '../../helpers/helpers';
+import { IDrugProps } from './Drug.props';
 import styles from './Drug.module.scss';
-
-interface IDrugProps {
-	drug: IDrug
-}
 
 const Drug = ({ drug }: IDrugProps): JSX.Element => {
 	// вычисляем просроченный товар
 	const getOverdueDrug = (sellBy: string): boolean => {
-		const currentDate = Date.now();
-		if (sellBy === '-') return false;
+		const currentDate = Date.now(); // текущая дата UTC
+		if (sellBy === '-') return false; // если нет даты
+		// если дата без числа
 		if (sellBy.length === 7) {
-			const getMonth = +(sellBy[0] + sellBy[1]);
-			const getYear = +(sellBy[3] + sellBy[4] + sellBy[5] + sellBy[6]);
-			const lastDayDate = new Date(getYear, getMonth, 0).getDate();
-			const dateUSFormat = `${getMonth}/${lastDayDate}/${getYear}`;
-			if (currentDate > Date.parse(dateUSFormat)) return true;
+			const getMonth = +(sellBy[0] + sellBy[1]); // получаем месяц
+			const getYear = +(sellBy[3] + sellBy[4] + sellBy[5] + sellBy[6]); // получаем год
+			const lastDayDate = new Date(getYear, getMonth, 0).getDate(); // получаем последнее число месяца
+			const dateUSFormat = `${getMonth}/${lastDayDate}/${getYear}`; // дата в US формате
+			console.log(dateUSFormat)
+			if (currentDate > Date.parse(`${dateUSFormat} 23:59:59`)) return true;
 			return false;
 		} else {
-			const getDay = sellBy[0] + sellBy[1];
-			const getMonth = sellBy[3] + sellBy[4];
-			const getYear = sellBy[6] + sellBy[7] + sellBy[8] + sellBy[9];
-			const dateUSFormat = `${getMonth}/${getDay}/${getYear}`;
-			if (currentDate > Date.parse(dateUSFormat)) return true;
+			// если дата полная
+			const getDay = sellBy[0] + sellBy[1]; // получаем день
+			const getMonth = sellBy[3] + sellBy[4]; // получаем месяц
+			const getYear = sellBy[6] + sellBy[7] + sellBy[8] + sellBy[9]; // получаем год
+			const dateUSFormat = `${getMonth}/${getDay}/${getYear}`; // дата в US формате
+			if (currentDate > Date.parse(`${dateUSFormat} 23:59:59`)) return true;
 			else return false;
 		}
 	};

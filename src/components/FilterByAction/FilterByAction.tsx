@@ -1,17 +1,12 @@
-import { ChangeEvent, Dispatch, useEffect, useState } from 'react';
+import { ChangeEvent, useEffect, useState } from 'react';
 import { useForm } from "react-hook-form";
 import Button from '@mui/material/Button';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCaretDown, faCaretUp } from '@fortawesome/free-solid-svg-icons';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import { clearFilters, drugFiltrationByAction, selectDrugState } from '../../store/drugSlice';
+import { IFilterByActionProps } from './FilterByAction.props';
 import styles from './FilterByAction.module.scss';
-import { SwitchType } from '../Filters/Filters';
-
-export interface IFilterByActionProps {
-	filterSwitch: SwitchType;
-	setFilterSwitch: Dispatch<React.SetStateAction<SwitchType>>
-}
 
 const FilterByAction = ({ filterSwitch, setFilterSwitch }: IFilterByActionProps): JSX.Element => {
 	const [checkboxFilter, setCheckboxFilter] = useState<string[]>([]); // список чекнутых категорий
@@ -23,29 +18,22 @@ const FilterByAction = ({ filterSwitch, setFilterSwitch }: IFilterByActionProps)
 	// следит за списком чекнутых категорий
 	useEffect(() => {
 		// если этот список пустой и статус фильтрации - в работе, то очищаем фильтры
-		if (checkboxFilter.length === 0 && drugState.filterStatus) {
-			dispatch(clearFilters());
-			// иначе если список имеет хотя бы одну запись - фильтруем список
-		} else if (checkboxFilter.length > 0) {
-			dispatch(drugFiltrationByAction(checkboxFilter));
-		}
+		if (checkboxFilter.length === 0 && drugState.filterStatus) dispatch(clearFilters());
+		// иначе если список имеет хотя бы одну запись - фильтруем список
+		else if (checkboxFilter.length > 0) dispatch(drugFiltrationByAction(checkboxFilter));
 	}, [checkboxFilter, dispatch]);
 
 	// следит за статусом работы фильтрации
 	useEffect(() => {
-		// если фильтрация НЕ в работе - обнуляем форму
-		!drugState.filterStatus && checkboxFilter.length > 1 && resetHandler();
+		!drugState.filterStatus && checkboxFilter.length > 1 && resetHandler(); // если фильтрация НЕ в работе - обнуляем форму
 	}, [drugState.filterStatus]);
 
 	// обработчик изминения чекбокса
 	const changeHandler = (e: ChangeEvent<HTMLInputElement>): void => {
 		// если инпут чекнулся - добавляем в список чекнутых категорий
-		if (e.target.checked) {
-			setCheckboxFilter(prevState => [...prevState, e.target.id]);
-			// иначе убираем его из этого списка
-		} else {
-			setCheckboxFilter(prevState => prevState.filter(actionName => actionName !== e.target.id));
-		}
+		if (e.target.checked) setCheckboxFilter(prevState => [...prevState, e.target.id]);
+		// иначе убираем его из этого списка
+		else setCheckboxFilter(prevState => prevState.filter(actionName => actionName !== e.target.id));
 	};
 
 	// обработчик сброса формы
