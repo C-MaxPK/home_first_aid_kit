@@ -31,7 +31,6 @@ export const drugSlice = createSlice({
     },
     // поиск лекарств
     drugSearch: (state, action: PayloadAction<string>) => {
-      state.filterStatus = false; // статус фильтрации - обнуляем
       const regexp = new RegExp(action.payload, 'i'); // регулярка с введенными данными из input
       state.drugListSearch = state.drugList.filter(drug => regexp.test(drug.name)); // оставляем в списке по поиску - что подошло
     },

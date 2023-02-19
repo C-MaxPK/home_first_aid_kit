@@ -13,7 +13,6 @@ const Drug = ({ drug }: IDrugProps): JSX.Element => {
 			const getYear = +(sellBy[3] + sellBy[4] + sellBy[5] + sellBy[6]); // получаем год
 			const lastDayDate = new Date(getYear, getMonth, 0).getDate(); // получаем последнее число месяца
 			const dateUSFormat = `${getMonth}/${lastDayDate}/${getYear}`; // дата в US формате
-			console.log(dateUSFormat)
 			if (currentDate > Date.parse(`${dateUSFormat} 23:59:59`)) return true;
 			return false;
 		} else {

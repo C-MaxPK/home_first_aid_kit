@@ -13,7 +13,7 @@ const Search = ({ activeSort, setActiveSort }: ISearchProps): JSX.Element => {
 
 	// следит за input'ом
 	useEffect(() => {
-		if (filterStatus) dispatch(clearFilters()); // если фильтрация была в работе - то очищаем фильтры
+		filterStatus && dispatch(clearFilters()); // если фильтрация была в работе - то очищаем фильтры
 		// if (activeSort !== null) setActiveSort(null); // если сортировка была - сбрасываем
 		dispatch(drugSearch(inputValue)); // поиск по введенным данным  в input
 	}, [dispatch, inputValue]);

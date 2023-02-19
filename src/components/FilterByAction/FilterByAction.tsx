@@ -25,10 +25,10 @@ const FilterByAction = ({ filterSwitch, setFilterSwitch }: IFilterByActionProps)
 
 	// следит за статусом работы фильтрации
 	useEffect(() => {
-		!drugState.filterStatus && checkboxFilter.length > 1 && resetHandler(); // если фильтрация НЕ в работе - обнуляем форму
+		!drugState.filterStatus && checkboxFilter.length > 0 && resetHandler(); // если фильтрация НЕ в работе и остались чекнутые категории - обнуляем форму
 	}, [drugState.filterStatus]);
 
-	// обработчик изминения чекбокса
+	// обработчик изменения чекбокса
 	const changeHandler = (e: ChangeEvent<HTMLInputElement>): void => {
 		// если инпут чекнулся - добавляем в список чекнутых категорий
 		if (e.target.checked) setCheckboxFilter(prevState => [...prevState, e.target.id]);
@@ -40,7 +40,7 @@ const FilterByAction = ({ filterSwitch, setFilterSwitch }: IFilterByActionProps)
 	const resetHandler = () => {
 		reset(); // форма обнуляется
 		setCheckboxFilter([]); // список чекнутых категорий обнуляется
-		dispatch(clearFilters()); // очищаем фильтры из state
+		drugState.filterStatus && dispatch(clearFilters()); // если фильтр в работе - очищаем фильтры из state
 	};
 
 	// обработчик переключателя фильтров
