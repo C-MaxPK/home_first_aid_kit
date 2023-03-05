@@ -10,7 +10,7 @@ const Drugs = (): JSX.Element => {
 
 	// разово - получает список лекарств из БД
 	useEffect(() => {
-		dispatch(fetchDrugList());
+		drugState.drugList.length === 0 && dispatch(fetchDrugList()); // если не был загружен до этого
 	}, [dispatch]);
 
 	return (

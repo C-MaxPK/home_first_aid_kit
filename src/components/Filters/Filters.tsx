@@ -1,11 +1,11 @@
 import { useState } from 'react';
-import { SwitchType } from '../../types/types';
+import { FilterSwitchType } from '../../types/types';
 import FilterByAction from '../FilterByAction/FilterByAction';
 import FilterByType from '../FilterByType/FilterByType';
 import styles from './Filters.module.scss';
 
 const Filters = (): JSX.Element => {
-	const [filterSwitch, setFilterSwitch] = useState<SwitchType>(null); // переключатель флага фильтров
+	const [filterSwitch, setFilterSwitch] = useState<FilterSwitchType>(null); // переключатель флага фильтров
 
 	return (
 		<div className={styles.filters}>

@@ -17,4 +17,13 @@ export interface IDrugState {
 }
 
 export type ActiveSortType = 'asc' | 'desc' | null;
-export type SwitchType = 'action' | 'type' | null;
+export type FilterSwitchType = 'action' | 'type' | null;
+
+export interface IRowTable {
+	id: number;
+	name: string;
+	quantity: string;
+	type: string;
+	sellBy: string;
+	overdue: string;
+}

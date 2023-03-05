@@ -1,4 +1,4 @@
-@import './styles/variables.scss';
+@import '../../styles/variables.scss';
 
 .app {
   max-width: 1640px;
@@ -36,8 +36,17 @@
 
 .main {
   display: flex;
+  border-bottom: 2px solid $colorSecondary;
 
   @media (max-width: 845px) {
     display: block;
+  }
+}
+
+.link {
+  text-decoration: none;
+
+  @media (max-width: 845px) {
+    display: none;
   }
 }

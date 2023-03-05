@@ -1,7 +1,7 @@
 import { Dispatch } from 'react';
-import { SwitchType } from '../../types/types';
+import { FilterSwitchType } from '../../types/types';
 
 export interface IFilterByTypeProps {
-	filterSwitch: SwitchType;
-	setFilterSwitch: Dispatch<React.SetStateAction<SwitchType>>;
+	filterSwitch: FilterSwitchType;
+	setFilterSwitch: Dispatch<React.SetStateAction<FilterSwitchType>>;
 }

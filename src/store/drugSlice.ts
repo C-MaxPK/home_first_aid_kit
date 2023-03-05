@@ -100,6 +100,7 @@ export const drugSlice = createSlice({
 export const { clearFilters, drugFiltrationByAction, drugFiltrationByType, drugSearch, drugSortAsc, drugSortDesc } = drugSlice.actions;
 
 export const selectDrugState = (state: RootState) => state.drug;
+export const selectDrugList = (state: RootState) => state.drug.drugList;
 export const selectDrugListSearch = (state: RootState) => state.drug.drugListSearch;
 export const selectDrugListFilter = (state: RootState) => state.drug.drugListFilter;
 export const selectFilterStatus = (state: RootState) => state.drug.filterStatus;
