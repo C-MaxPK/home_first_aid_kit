@@ -50,3 +50,18 @@
     display: none;
   }
 }
+
+.arrowUp {
+  position: fixed;
+  border: 3px solid $colorSecondary;
+  border-radius: 6px;
+  bottom: 15px;
+  right: 15px;
+  width: 45px;
+  height: 45px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  backdrop-filter: blur(2px);
+}

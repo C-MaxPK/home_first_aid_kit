@@ -1,6 +1,9 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Button } from '@mui/material';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faChevronUp } from '@fortawesome/free-solid-svg-icons';
+import { colorSecondary } from '../../constants/colors';
 import Search from '../../components/Search/Search';
 // import Sort from './components/Sort/Sort';
 import Filters from '../../components/Filters/Filters';
@@ -11,6 +14,23 @@ import styles from './Home.module.scss';
 
 const Home = (): JSX.Element => {
 	const [activeSort, setActiveSort] = useState<ActiveSortType>(null); // активная сортировка
+	const [scroll, setScroll] = useState<number>(0); // высота прокрутки в пикселях
+
+	// подписываемся на событие прокрутки
+	useEffect(() => {
+		window.addEventListener("scroll", () => setScroll(window.scrollY));
+		// отписываемся от события прокрутки
+		return () => window.removeEventListener("scroll", () => setScroll(window.scrollY));
+	}, []);
+
+	// плавный скролл до верха страницы
+	const scrollToTop = () => {
+		window.scrollTo({
+			top: 0,
+			left: 0,
+			behavior: 'smooth'
+		});
+	};
 
 	return (
 		<div className={styles.app}>
@@ -30,6 +50,10 @@ const Home = (): JSX.Element => {
 				<Filters />
 				<Drugs />
 			</main>
+
+			{scroll > 300 && <div className={styles.arrowUp} onClick={scrollToTop}>
+				<FontAwesomeIcon icon={faChevronUp} size='xl' color={colorSecondary} />
+			</div>}
 
 		</div>
 	);
