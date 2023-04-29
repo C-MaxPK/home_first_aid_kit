@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { DataGrid, GridColDef, ruRU } from '@mui/x-data-grid';
+import { DataGrid, GridColDef, GridToolbarQuickFilter, ruRU } from '@mui/x-data-grid';
 import { Box } from '@mui/material';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import { fetchDrugList, selectDrugList } from '../../store/drugSlice';
@@ -7,6 +7,14 @@ import { declination } from '../../helpers/declination';
 import { getOverdueDrug } from '../../helpers/overdue';
 import { IRowTable } from '../../types/types';
 import styles from './InventoryTable.module.scss';
+
+const CustomToolbar = (): JSX.Element => {
+	return (
+		<Box sx={{ p: 1, pb: 0 }} >
+			<GridToolbarQuickFilter />
+		</Box>
+	);
+};
 
 const InventoryTable = (): JSX.Element => {
 	const [drugListForTable, setDrugListForTable] = useState<IRowTable[]>([]); // список лекарств, форматированных для таблицы
@@ -42,7 +50,7 @@ const InventoryTable = (): JSX.Element => {
 	}, [drugList]);
 
 	return (
-		<Box sx={{ height: 610, width: '100%' }}>
+		<Box sx={{ height: 630, width: '100%' }}>
 			<DataGrid
 				rows={drugListForTable}
 				columns={columns}
@@ -58,6 +66,9 @@ const InventoryTable = (): JSX.Element => {
 				rowHeight={25}
 				disableColumnMenu
 				localeText={ruRU.components.MuiDataGrid.defaultProps.localeText}
+				components={{
+					Toolbar: CustomToolbar
+				}}
 			/>
 		</Box>
 	);

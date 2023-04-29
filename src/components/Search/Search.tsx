@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { InputAdornment, TextField } from '@mui/material';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faXmark } from '@fortawesome/free-solid-svg-icons';
@@ -8,6 +8,7 @@ import { ISearchProps } from './Search.props';
 
 const Search = ({ activeSort, setActiveSort }: ISearchProps): JSX.Element => {
 	const [inputValue, setInputValue] = useState<string>(''); // строка поиска input
+	const inputRef = useRef<HTMLInputElement>(); // ссылка на input
 	const dispatch = useAppDispatch();
 	const filterStatus = useAppSelector(selectFilterStatus); // фильтрация в работе?
 
@@ -15,12 +16,19 @@ const Search = ({ activeSort, setActiveSort }: ISearchProps): JSX.Element => {
 	useEffect(() => {
 		filterStatus && dispatch(clearFilters()); // если фильтрация была в работе - то очищаем фильтры
 		// if (activeSort !== null) setActiveSort(null); // если сортировка была - сбрасываем
-		dispatch(drugSearch(inputValue)); // поиск по введенным данным  в input
+		dispatch(drugSearch(inputValue)); // поиск по введенным данным в input
 	}, [dispatch, inputValue]);
+
+	// обработчик очистки input'а
+	const clearHandler = (): void => {
+		setInputValue(''); // очищаем поле
+		inputRef.current?.focus(); // ставим фокус обратно в поле
+	};
 
 	return (
 		<TextField
 			id="outlined-basic"
+			inputRef={inputRef}
 			label="Поиск по лекарству..."
 			variant="outlined"
 			size="small"
@@ -32,7 +40,7 @@ const Search = ({ activeSort, setActiveSort }: ISearchProps): JSX.Element => {
 			InputProps={{
 				endAdornment: (
 					<InputAdornment position="end" >
-						{inputValue.length > 0 && <FontAwesomeIcon icon={faXmark} onClick={() => setInputValue('')} style={{ cursor: 'pointer ' }} />}
+						{inputValue.length > 0 && <FontAwesomeIcon icon={faXmark} onClick={clearHandler} style={{ cursor: 'pointer ' }} />}
 					</InputAdornment>
 				),
 			}}
