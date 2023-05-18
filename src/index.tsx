@@ -1,20 +1,21 @@
 import { createRoot } from 'react-dom/client';
-import { createBrowserRouter, Link, RouterProvider } from "react-router-dom";
+import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import { Provider } from 'react-redux';
 import { store } from './store/store';
 import Home from './page/Home/Home';
 import Inventory from './page/Inventory/Inventory';
-import './index.css';
+import NotFound from './page/NotFound/NotFound';
+import './index.scss';
 
 const router = createBrowserRouter([
   {
     path: "/",
     element: <Home />,
-    errorElement: <div style={{ textAlign: 'center' }}>Похоже такой страницы не существует, горцуй на <Link to={`/`}>главную</Link> :-)</div>,
+    errorElement: <NotFound />
   },
   {
     path: "/inventory",
-    element: <Inventory />,
+    element: <Inventory />
   },
 ]);
 

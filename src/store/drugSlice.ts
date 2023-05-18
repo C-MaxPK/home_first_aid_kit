@@ -1,13 +1,13 @@
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { IDrug, IDrugState } from '../types/types';
 import { RootState } from './store';
+import { IDrug, IDrugState } from '../types/types';
 
 const initialState: IDrugState = {
   drugList: [], // список лекарств, полученный из БД
   drugListSearch: [], // список лекарств по поиску (фильтрует из drugList)
   drugListFilter: [], // список отфильтрованных лекарств от списка в поиске (фильтрует из drugListSearch)
   fetchStatus: 'idle', // статус загрузки лекарств из БД
-  filterStatus: false // фильтрация в работе?
+  filterStatus: false // статус активности фильтрации
 };
 
 // получение лекарств из БД

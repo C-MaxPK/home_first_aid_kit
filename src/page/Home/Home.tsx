@@ -18,10 +18,15 @@ const Home = (): JSX.Element => {
 
 	// подписываемся на событие прокрутки
 	useEffect(() => {
-		window.addEventListener("scroll", () => setScroll(window.scrollY));
+		window.addEventListener("scroll", setScrollFunc);
 		// отписываемся от события прокрутки
-		return () => window.removeEventListener("scroll", () => setScroll(window.scrollY));
+		return () => window.removeEventListener("scroll", setScrollFunc);
 	}, []);
+
+	// функция установки в state высоты прокрутки
+	const setScrollFunc = (): void => {
+		setScroll(window.scrollY);
+	};
 
 	// плавный скролл до верха страницы
 	const scrollToTop = () => {
