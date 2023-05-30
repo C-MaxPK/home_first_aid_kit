@@ -16,7 +16,9 @@ const Drugs = (): JSX.Element => {
 	return (
 		<div className={styles.drugs}>
 			{drugState.fetchStatus === 'failed' && <div>ошибка получении данных</div>}
-			{drugState.drugListSearch.length === 0 && drugState.fetchStatus === 'idle' && <div>не найдено</div>}
+			{drugState.fetchStatus === 'idle' && (drugState.drugListSearch.length === 0 || drugState.filterStatus && drugState.drugListFilter.length === 0) &&
+				<div>не найдено</div>
+			}
 			{drugState.filterStatus ?
 				drugState.drugListFilter.map(drug => (
 					<Drug key={drug.id} drug={drug} />

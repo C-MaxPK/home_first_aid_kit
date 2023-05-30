@@ -1,15 +1,16 @@
 import { ChangeEvent, useEffect, useState } from 'react';
 import { useForm } from "react-hook-form";
-import Button from '@mui/material/Button';
+// import Button from '@mui/material/Button';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCaretDown, faCaretUp } from '@fortawesome/free-solid-svg-icons';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
-import { clearFilters, drugFiltrationByAction, selectDrugState } from '../../store/drugSlice';
-import { IFilterByActionProps } from './FilterByAction.props';
+import { addFilterListByAction, clearFilters, generalFiltrationDrugs, selectDrugState } from '../../store/drugSlice';
+// import { IFilterByActionProps } from './FilterByAction.props';
 import styles from './FilterByAction.module.scss';
 
-const FilterByAction = ({ filterSwitch, setFilterSwitch }: IFilterByActionProps): JSX.Element => {
+const FilterByAction = (/* {  }: IFilterByActionProps */): JSX.Element => {
 	const [checkboxFilter, setCheckboxFilter] = useState<string[]>([]); // список чекнутых категорий
+	const [showFilter, setShowFilter] = useState<boolean>(true); // показ развернутого фильтра
 	const dispatch = useAppDispatch();
 	const drugState = useAppSelector(selectDrugState); // весь state
 	const { register, reset } = useForm(); // регистрация и сброс от useForm
@@ -17,10 +18,13 @@ const FilterByAction = ({ filterSwitch, setFilterSwitch }: IFilterByActionProps)
 
 	// следит за списком чекнутых категорий
 	useEffect(() => {
-		// если этот список пустой и статус фильтрации - в работе, то очищаем фильтры
-		if (checkboxFilter.length === 0 && drugState.filterStatus) dispatch(clearFilters());
-		// иначе если список имеет хотя бы одну запись - фильтруем список
-		else if (checkboxFilter.length > 0) dispatch(drugFiltrationByAction(checkboxFilter));
+		// если этот список и список других фильтров пустой, статус фильтрации - в работе, то очищаем фильтры
+		if (checkboxFilter.length === 0 && drugState.filterList.type.length === 0 && drugState.filterStatus) dispatch(clearFilters());
+		// иначе если список имеет хотя бы одну запись или другие списки не пустые
+		else if (checkboxFilter.length > 0 || drugState.filterList.type.length > 0) {
+			dispatch(addFilterListByAction(checkboxFilter)); // добавляем в store список для фильтрации
+			dispatch(generalFiltrationDrugs()); // фильтруем
+		}
 	}, [checkboxFilter, dispatch]);
 
 	// следит за статусом работы фильтрации
@@ -43,18 +47,6 @@ const FilterByAction = ({ filterSwitch, setFilterSwitch }: IFilterByActionProps)
 		drugState.filterStatus && dispatch(clearFilters()); // если фильтр в работе - очищаем фильтры из state
 	};
 
-	// обработчик переключателя фильтров
-	const switchHandler = () => {
-		// если флаг - текущий
-		if (filterSwitch === 'action') {
-			setFilterSwitch(null); // сбрасываем флаг
-			resetHandler(); // сбрасываем форму
-		} else {
-			setFilterSwitch('action'); // меняем на текущий флаг
-			resetHandler(); // сбрасываем форму
-		}
-	};
-
 	// в потоке перебираем список лекарст по поиску и добавляем в список категорий для фильтрации не повторяющиеся категории из всех лекарств
 	drugState.drugListSearch.forEach(drug => {
 		drug.categories.forEach(category => {
@@ -66,26 +58,24 @@ const FilterByAction = ({ filterSwitch, setFilterSwitch }: IFilterByActionProps)
 
 	return (
 		<form className={styles.form}>
-			<h4 className={styles.formTitle} onClick={switchHandler}>
+			<h4 className={styles.formTitle} onClick={() => setShowFilter(prev => !prev)}>
 				Действие
-				<FontAwesomeIcon icon={filterSwitch === 'action' ? faCaretUp : faCaretDown} />
+				<FontAwesomeIcon icon={showFilter ? faCaretUp : faCaretDown} />
 			</h4>
-			{filterSwitch === 'action' && <>
-				<ul className={styles.formFiltersList}>
+			<ul className={showFilter ? styles.formFiltersList : styles.formFiltersListDisplayNone}>
 
-					{drugState.drugListSearch.length === 0 && drugState.fetchStatus === 'idle' && <div>не найдено</div>}
-					{categorySort.sort().map(category => (
-						<li key={category} className={styles.formFiltersItem}>
-							<label className={styles.formFiltersLabel}>
-								<input type="checkbox" id={category} {...register('action', { onChange: (e) => changeHandler(e) })} />
-								{category}
-							</label>
-						</li>
-					))}
+				{drugState.drugListSearch.length === 0 && drugState.fetchStatus === 'idle' && <div>не найдено</div>}
+				{categorySort.sort().map(category => (
+					<li key={category} className={styles.formFiltersItem}>
+						<label className={styles.formFiltersLabel}>
+							<input type="checkbox" id={category} {...register('action', { onChange: (e) => changeHandler(e) })} />
+							{category}
+						</label>
+					</li>
+				))}
 
-				</ul>
-				{drugState.filterStatus && checkboxFilter.length > 0 && <Button variant="outlined" color="success" size="small" onClick={resetHandler} sx={{ marginTop: '10px' }}>Очистить</Button>}
-			</>}
+			</ul>
+			{/* {drugState.filterStatus && checkboxFilter.length > 0 && <Button variant="outlined" color="success" size="small" onClick={resetHandler} sx={{ marginTop: '10px' }}>Очистить</Button>} */}
 		</form>
 	);
 };

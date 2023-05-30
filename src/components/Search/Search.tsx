@@ -10,7 +10,7 @@ const Search = ({ activeSort, setActiveSort }: ISearchProps): JSX.Element => {
 	const [inputValue, setInputValue] = useState<string>(''); // строка поиска input
 	const inputRef = useRef<HTMLInputElement>(); // ссылка на input
 	const dispatch = useAppDispatch();
-	const filterStatus = useAppSelector(selectFilterStatus); // фильтрация в работе?
+	const filterStatus = useAppSelector(selectFilterStatus); // статус фильтрации
 
 	// следит за input'ом
 	useEffect(() => {

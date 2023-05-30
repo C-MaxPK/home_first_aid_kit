@@ -36,6 +36,10 @@
 			@media (max-width: 535px) {
 				columns: 1;
 			}
+
+			&DisplayNone {
+				display: none;
+			}
 		}
 
 		&Item {

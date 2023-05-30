@@ -12,12 +12,15 @@ export interface IDrugState {
 	drugList: IDrug[];
 	drugListSearch: IDrug[];
 	drugListFilter: IDrug[];
+	filterList: {
+		action: string[];
+		type: string[];
+	};
 	fetchStatus: 'idle' | 'loading' | 'failed';
 	filterStatus: boolean;
 }
 
 export type ActiveSortType = 'asc' | 'desc' | null;
-export type FilterSwitchType = 'action' | 'type' | null;
 
 export interface IRowTable {
 	id: number;
