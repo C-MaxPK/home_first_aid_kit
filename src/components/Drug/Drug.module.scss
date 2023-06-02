@@ -1,9 +1,8 @@
 @import '../../styles/variables.scss';
 
 .drug {
-	border-radius: 10px;
 	width: 250px;
-	max-height: 450px;
+	border-radius: 10px;
 	box-shadow: 0 0 5px $colorSecondary;
 	position: relative;
 
@@ -17,11 +16,11 @@
 
 	&Img {
 		height: 150px;
-		overflow: hidden;
-		border-radius: 10px 10px 0 0;
 		display: flex;
 		justify-content: center;
 		align-items: center;
+		border-radius: 10px 10px 0 0;
+		overflow: hidden;
 
 		&>img {
 			width: 100%;
@@ -44,47 +43,49 @@
 		}
 
 		&Type {
-			text-align: right;
 			color: $colorSecondary;
+			text-align: right;
 		}
 
 		&Categories {
 			margin-top: 15px;
 			padding-top: 5px;
 			border-top: 1px solid $colorSecondary;
+			display: flex;
+			justify-content: center;
+			flex-wrap: wrap;
+			gap: 5px;
 			color: grey;
 			text-align: center;
 		}
 
 		&Category {
-			display: inline-block;
 			padding: 0 5px;
-			margin: 1px;
 			border: 1px solid $colorSecondary;
-			font-size: 12px;
 			border-radius: 10px;
 			background-color: $colorThird;
+			font-size: 12px;
 			text-transform: uppercase;
 		}
 	}
 
 	&Name {
-		text-align: center;
 		color: $colorPrimary;
+		text-align: center;
 	}
 
 	&SignOverdue {
 		position: absolute;
-		padding: 0 5px 5px;
 		top: 50%;
 		left: 50%;
-		color: $colorDanger;
+		padding: 0 5px 5px;
+		border-radius: 5px;
+		box-shadow: 0 0 20px $colorDanger;
 		background: rgba(255, 255, 255, 0.5);
+		color: $colorDanger;
 		font-size: 32px;
 		text-align: center;
 		transform: translate(-50%, -50%) rotate(-45deg);
-		border-radius: 5px;
-		box-shadow: 0 0 20px $colorDanger;
 		backdrop-filter: blur(0.5px);
 
 		@media (max-width: 535px) {

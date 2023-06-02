@@ -1,8 +1,7 @@
-.drugs {
-	display: flex;
-	flex-wrap: wrap;
-	gap: 15px;
+.drugsWrapper {
 	padding: 10px 0 10px 10px;
+	display: flex;
+	flex-direction: column;
 
 	@media (max-width: 845px) {
 		padding: 10px 0 10px;
@@ -11,4 +10,10 @@
 	@media (max-width: 535px) {
 		gap: 10px;
 	}
+}
+
+.drugs {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 15px;
 }

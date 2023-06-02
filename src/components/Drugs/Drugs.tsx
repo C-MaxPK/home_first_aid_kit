@@ -14,20 +14,24 @@ const Drugs = (): JSX.Element => {
 	}, [dispatch]);
 
 	return (
-		<div className={styles.drugs}>
+		<div className={styles.drugsWrapper}>
 			{drugState.fetchStatus === 'failed' && <div>ошибка получении данных</div>}
+
 			{drugState.fetchStatus === 'idle' && (drugState.drugListSearch.length === 0 || drugState.filterStatus && drugState.drugListFilter.length === 0) &&
 				<div>не найдено</div>
 			}
-			{drugState.filterStatus ?
-				drugState.drugListFilter.map(drug => (
-					<Drug key={drug.id} drug={drug} />
-				))
-				:
-				drugState.drugListSearch.map(drug => (
-					<Drug key={drug.id} drug={drug} />
-				))
-			}
+
+			<div className={styles.drugs}>
+				{drugState.filterStatus ?
+					drugState.drugListFilter.map(drug => (
+						<Drug key={drug.id} drug={drug} />
+					))
+					:
+					drugState.drugListSearch.map(drug => (
+						<Drug key={drug.id} drug={drug} />
+					))
+				}
+			</div>
 		</div>
 	);
 };

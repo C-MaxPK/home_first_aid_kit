@@ -1,9 +1,9 @@
 @import '../../styles/variables.scss';
 
 .form {
+	flex-shrink: 0;
 	width: 298px;
 	padding: 10px 0;
-	flex-shrink: 0;
 	border-bottom: 1px dashed $colorSecondary;
 
 	@media (max-width: 845px) {
@@ -26,8 +26,8 @@
 
 	&Filters {
 		&List {
-			margin: 10px 0 0;
 			max-height: 250px;
+			margin: 10px 0 0;
 			overflow: auto;
 
 			@media (max-width: 845px) {
@@ -48,10 +48,10 @@
 		}
 
 		&Label {
-			cursor: pointer;
 			display: flex;
 			gap: 10px;
 			align-items: center;
+			cursor: pointer;
 
 			&:hover {
 				color: $colorPrimary;
