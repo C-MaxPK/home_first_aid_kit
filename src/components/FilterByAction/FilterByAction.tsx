@@ -1,11 +1,9 @@
 import { ChangeEvent, useEffect, useState } from 'react';
 import { useForm } from "react-hook-form";
-// import Button from '@mui/material/Button';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCaretDown, faCaretUp } from '@fortawesome/free-solid-svg-icons';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import { addFilterListByAction, clearFilters, generalFiltrationDrugs, selectDrugState } from '../../store/drugSlice';
-// import { IFilterByActionProps } from './FilterByAction.props';
 import styles from './FilterByAction.module.scss';
 
 const FilterByAction = (/* {  }: IFilterByActionProps */): JSX.Element => {
@@ -75,7 +73,6 @@ const FilterByAction = (/* {  }: IFilterByActionProps */): JSX.Element => {
 				))}
 
 			</ul>
-			{/* {drugState.filterStatus && checkboxFilter.length > 0 && <Button variant="outlined" color="success" size="small" onClick={resetHandler} sx={{ marginTop: '10px' }}>Очистить</Button>} */}
 		</form>
 	);
 };
