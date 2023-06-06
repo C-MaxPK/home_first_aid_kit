@@ -1,14 +1,11 @@
 @import '../../styles/variables.scss';
 
 .form {
-	flex-shrink: 0;
 	width: 298px;
 	padding: 10px 0;
-	border-bottom: 1px dashed $colorSecondary;
 
 	@media (max-width: 845px) {
 		width: 515px;
-		padding-bottom: 10px;
 	}
 
 	@media (max-width: 535px) {
@@ -26,7 +23,7 @@
 
 	&Filters {
 		&List {
-			max-height: 245px;
+			max-height: 240px;
 			margin: 10px 0 0;
 			overflow: auto;
 

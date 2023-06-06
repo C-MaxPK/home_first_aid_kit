@@ -5,6 +5,10 @@
 	flex-direction: column;
 	border-right: 2px solid $colorSecondary;
 
+	& form:not(:last-child) {
+		border-bottom: 1px dashed $colorSecondary;
+	}
+
 	@media (max-width: 845px) {
 		border: none;
 		border-bottom: 2px solid $colorSecondary;
