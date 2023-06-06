@@ -4,9 +4,9 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faXmark } from '@fortawesome/free-solid-svg-icons';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import { clearFilters, drugSearch, selectFilterStatus } from '../../store/drugSlice';
-import { ISearchProps } from './Search.props';
+// import { ISearchProps } from './Search.props';
 
-const Search = ({ activeSort, setActiveSort }: ISearchProps): JSX.Element => {
+const Search = (/* { activeSort, setActiveSort }: ISearchProps */): JSX.Element => {
 	const [inputValue, setInputValue] = useState<string>(''); // строка поиска input
 	const inputRef = useRef<HTMLInputElement>(); // ссылка на input
 	const dispatch = useAppDispatch();

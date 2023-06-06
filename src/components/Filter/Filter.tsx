@@ -9,7 +9,7 @@ import styles from './Filter.module.scss';
 
 const Filter = ({ title, filterListLength, addFilterListFunc }: IFilterProps): JSX.Element => {
 	const [checkboxFilter, setCheckboxFilter] = useState<string[]>([]); // список чекнутых пунктов
-	const [showFilter, setShowFilter] = useState<boolean>(true); // показ развернутого фильтра
+	const [showFilter, setShowFilter] = useState<boolean>(window.innerWidth > 845 ? true : false); // показ развернутого фильтра (на экранах меньше 845px - свернут по умолчанию)
 	const dispatch = useAppDispatch();
 	const drugState = useAppSelector(selectDrugState); // весь state
 	const { register, reset } = useForm(); // регистрация и сброс от useForm
