@@ -24,7 +24,7 @@ const InventoryTable = (): JSX.Element => {
 		{ field: 'name', headerName: 'Название', width: 350, headerClassName: styles.header },
 		{ field: 'quantity', headerName: 'Количество', width: 200, headerClassName: styles.header },
 		{ field: 'type', headerName: 'Вид', width: 200, headerClassName: styles.header },
-		{ field: 'sellBy', headerName: 'Срок годности', width: 150, headerClassName: styles.header, sortable: false },
+		{ field: 'sellBy', headerName: 'Срок годности', width: 150, headerClassName: styles.header },
 		{ field: 'overdue', headerName: 'Просрок', width: 150, headerClassName: styles.header }
 	];
 

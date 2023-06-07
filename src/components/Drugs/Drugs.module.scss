@@ -14,4 +14,9 @@
 	@media (max-width: 535px) {
 		gap: 10px;
 	}
+
+	&Count {
+		margin: -10px 0 10px;
+		text-align: right;
+	}
 }
