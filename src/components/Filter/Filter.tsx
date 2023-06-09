@@ -69,15 +69,23 @@ const Filter = ({ title, filterListLength, addFilterListFunc }: IFilterProps): J
 			</h4>
 			<ul className={showFilter ? styles.formFiltersList : styles.formFiltersListDisplayNone}>
 
-				{drugState.drugListSearch.length === 0 && drugState.fetchStatus === 'idle' && <div>не найдено</div>}
-				{itemsListForFilter.sort().map(item => (
-					<li key={item} className={styles.formFiltersItem}>
-						<label className={styles.formFiltersLabel}>
-							<input type="checkbox" id={item} {...register('action', { onChange: (e) => changeHandler(e) })} />
-							{item.toLowerCase()}
-						</label>
-					</li>
-				))}
+				{drugState.drugListSearch.length === 0 && drugState.fetchStatus === 'idle' && <p>Не найдено</p>}
+				{itemsListForFilter
+					.sort((a, b) => {
+						if (checkboxFilter.includes(a) && !checkboxFilter.includes(b)) return -1;
+						else if (!checkboxFilter.includes(a) && checkboxFilter.includes(b)) return 1;
+						else if ((checkboxFilter.includes(a) && checkboxFilter.includes(b) || !checkboxFilter.includes(a) && !checkboxFilter.includes(b)) && a > b) return 1;
+						else if ((checkboxFilter.includes(a) && checkboxFilter.includes(b) || !checkboxFilter.includes(a) && !checkboxFilter.includes(b)) && a < b) return -1;
+						else return 0
+					})
+					.map(item => (
+						<li key={item} className={styles.formFiltersItem}>
+							<label className={styles.formFiltersLabel}>
+								<input type="checkbox" id={item} {...register('action', { onChange: (e) => changeHandler(e) })} />
+								{item.toLowerCase()}
+							</label>
+						</li>
+					))}
 
 			</ul>
 		</form>

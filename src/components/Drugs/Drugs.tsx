@@ -22,7 +22,7 @@ const Drugs = (): JSX.Element => {
 				<p>Не найдено</p>
 			}
 
-			{drugState.fetchStatus === 'idle' && (drugState.drugListSearch.length > 0 || drugState.filterStatus && drugState.drugListFilter.length > 0) &&
+			{drugState.fetchStatus === 'idle' && (!drugState.filterStatus && drugState.drugListSearch.length > 0 || drugState.filterStatus && drugState.drugListFilter.length > 0) &&
 				<p className={styles.drugsCount}>
 					Найдено {drugState.filterStatus ? drugState.drugListFilter.length : drugState.drugListSearch.length} {declination(drugState.filterStatus ? drugState.drugListFilter.length : drugState.drugListSearch.length, 'лекарство')}
 				</p>
