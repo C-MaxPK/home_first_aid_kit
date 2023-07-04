@@ -5,15 +5,13 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faChevronUp } from '@fortawesome/free-solid-svg-icons';
 import { colorSecondary } from '../../constants/colors';
 import Search from '../../components/Search/Search';
-// import Sort from './components/Sort/Sort';
+import Sort from '../../components/Sort/Sort';
 import Filters from '../../components/Filters/Filters';
 import Drugs from '../../components/Drugs/Drugs';
 import Logo from './logo.png';
-// import { ActiveSortType } from '../../types/types';
 import styles from './Home.module.scss';
 
 const Home = (): JSX.Element => {
-	// const [activeSort, setActiveSort] = useState<ActiveSortType>(null); // активная сортировка
 	const [scroll, setScroll] = useState<number>(0); // высота прокрутки в пикселях
 
 	// подписываемся на событие прокрутки
@@ -42,10 +40,8 @@ const Home = (): JSX.Element => {
 
 			<header className={styles.header}>
 				<img src={Logo} alt="Логотип" />
-				<Search /* activeSort={activeSort} setActiveSort={setActiveSort} */ />
-
-				{/* <Sort activeSort={activeSort} setActiveSort={setActiveSort} /> */}
-
+				<Search />
+				<Sort />
 				<Link to={`inventory`} className={styles.link}>
 					<Button variant="text" color="success" >Инвентаризация</Button>
 				</Link>

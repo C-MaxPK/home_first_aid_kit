@@ -1,12 +1,26 @@
 import { useAppSelector } from '../../store/hooks';
-import { selectFetchStatus, selectVisibleDrugs } from '../../store/drugSlice';
+import { selectFetchStatus, selectSortType, selectVisibleDrugs } from '../../store/drugSlice';
 import { declination } from '../../helpers/declination';
+import { IDrug } from '../../types/types';
 import Drug from '../Drug/Drug';
 import styles from './Drugs.module.scss';
 
 const Drugs = (): JSX.Element => {
-	const fetchStatus = useAppSelector(selectFetchStatus); // статус загрузки лекарств
+	const sortType = useAppSelector(selectSortType); // store - тип сортировки
+	const fetchStatus = useAppSelector(selectFetchStatus); // store - статус загрузки лекарств
 	const visibleDrugs = useAppSelector(selectVisibleDrugs); // store - фильтрованный список лекарств
+
+	const sorting = (a: IDrug, b: IDrug): 1 | 0 | -1 => {
+		if (sortType === 'default') {
+			if (a.id > b.id) return 1;
+			else if (a.id < b.id) return -1;
+			else return 0;
+		} else {
+			if (a.name > b.name) return sortType === 'asc' ? 1 : -1;
+			else if (a.name < b.name) return sortType === 'asc' ? -1 : 1;
+			else return 0;
+		}
+	};
 
 	return (
 		<div className={styles.drugsWrapper}>
@@ -24,9 +38,12 @@ const Drugs = (): JSX.Element => {
 			}
 
 			<div className={styles.drugs}>
-				{visibleDrugs.map(drug => (
-					<Drug key={drug.id} drug={drug} />
-				))}
+				{visibleDrugs
+					.sort(sorting)
+					.map(drug => (
+						<Drug key={drug.id} drug={drug} />
+					))
+				}
 			</div>
 		</div>
 	);

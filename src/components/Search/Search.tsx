@@ -3,19 +3,20 @@ import { InputAdornment, TextField } from '@mui/material';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faXmark } from '@fortawesome/free-solid-svg-icons';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
-import { addSearchValue, clearFilterList, selectFilterList } from '../../store/drugSlice';
-// import { ISearchProps } from './Search.props';
+import { addSearchValue, changeSort, clearFilterList, selectFilterList, selectSortType } from '../../store/drugSlice';
 
-const Search = (/* { activeSort, setActiveSort }: ISearchProps */): JSX.Element => {
+const Search = (): JSX.Element => {
 	const [inputValue, setInputValue] = useState<string>(''); // строка поиска input
 	const inputRef = useRef<HTMLInputElement>(); // ссылка на input
+
 	const dispatch = useAppDispatch();
 	const filterList = useAppSelector(selectFilterList); // store - списки пунктов для фильтрации
+	const sortType = useAppSelector(selectSortType); // store - тип сортировки
 
 	// следим за input'ом
 	useEffect(() => {
 		(filterList.action.length > 0 || filterList.type.length > 0) && dispatch(clearFilterList()); // если списки фильтров не пустые - очищаем
-		// if (activeSort !== null) setActiveSort(null); // если сортировка была - сбрасываем
+		sortType !== 'default' && dispatch(changeSort('default')); // если была сортировка - сбрасываем
 		dispatch(addSearchValue(inputValue)); // добавление значения строки поиска в store
 	}, [dispatch, inputValue]);
 

@@ -8,6 +8,8 @@ export interface IDrug {
 	sellBy: string;
 }
 
+export type ActiveSortType = 'asc' | 'desc' | 'default';
+
 export interface IDrugState {
 	drugList: IDrug[];
 	search: string;
@@ -15,10 +17,9 @@ export interface IDrugState {
 		action: string[];
 		type: string[];
 	};
+	sort: ActiveSortType;
 	fetchStatus: 'idle' | 'loading' | 'failed';
 }
-
-export type ActiveSortType = 'asc' | 'desc' | null;
 
 export interface IRowTable {
 	id: number;

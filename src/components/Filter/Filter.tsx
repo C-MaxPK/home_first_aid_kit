@@ -12,7 +12,7 @@ const Filter = ({ title, thisFilterListLength, otherFilterListLength, addFilterL
 	const [showFilter, setShowFilter] = useState<boolean>(window.innerWidth > 845 ? true : false); // показ развернутого фильтра (на экранах меньше 845px - свернут по умолчанию)
 
 	const dispatch = useAppDispatch();
-	const fetchStatus = useAppSelector(selectFetchStatus); // статус загрузки лекарств
+	const fetchStatus = useAppSelector(selectFetchStatus); // store - статус загрузки лекарств
 	const visibleDrugs = useAppSelector(state => selectVisibleDrugs(state, true)); // store - фильтрованный список лекарств
 
 	const { register, reset } = useForm({ defaultValues: { filter: [''] } }); // регистрация и сброс от useForm

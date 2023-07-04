@@ -1,6 +1,6 @@
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { RootState } from './store';
-import { IDrug, IDrugState } from '../types/types';
+import { ActiveSortType, IDrug, IDrugState } from '../types/types';
 
 const initialState: IDrugState = {
   drugList: [], // список лекарств
@@ -9,6 +9,7 @@ const initialState: IDrugState = {
     action: [], // список фильтров по действию
     type: [], // список фильтров по типу
   },
+  sort: 'default',
   fetchStatus: 'idle', // статус загрузки лекарств из БД
 };
 
@@ -42,22 +43,10 @@ export const drugSlice = createSlice({
     addFilterListByType: (state, action: PayloadAction<string[]>) => {
       state.filterList.type = action.payload;
     },
-    // сортировка по возрастанию
-    // drugSortAsc: (state, action: PayloadAction<'filter' | 'search'>) => {
-    //   (action.payload === 'search' ? state.drugListSearch : state.drugListFilter).sort((a, b) => {
-    //     if (a.name > b.name) return 1;
-    //     else if (a.name < b.name) return -1;
-    //     else return 0;
-    //   });
-    // },
-    // сортировка по убыванию
-    // drugSortDesc: (state, action: PayloadAction<'filter' | 'search'>) => {
-    //   (action.payload === 'search' ? state.drugListSearch : state.drugListFilter).sort((a, b) => {
-    //     if (a.name < b.name) return 1;
-    //     else if (a.name > b.name) return -1;
-    //     else return 0;
-    //   });
-    // },
+    // выбор типа сортировки
+    changeSort: (state, action: PayloadAction<ActiveSortType>) => {
+      state.sort = action.payload;
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -74,12 +63,13 @@ export const drugSlice = createSlice({
   },
 });
 
-export const { clearFilterList, addSearchValue, addFilterListByAction, addFilterListByType } = drugSlice.actions;
+export const { clearFilterList, addSearchValue, addFilterListByAction, addFilterListByType, changeSort } = drugSlice.actions;
 
 export const selectDrugState = (state: RootState) => state.drug;
 export const selectDrugList = (state: RootState) => state.drug.drugList;
 export const selectSearchValue = (state: RootState) => state.drug.search;
 export const selectFilterList = (state: RootState) => state.drug.filterList;
+export const selectSortType = (state: RootState) => state.drug.sort;
 export const selectFetchStatus = (state: RootState) => state.drug.fetchStatus;
 export const selectVisibleDrugs = (state: RootState, onlySearch?: boolean) => {
   // список фильтрованных лекарств по поиску
