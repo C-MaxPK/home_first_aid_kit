@@ -3,15 +3,13 @@ import { RootState } from './store';
 import { IDrug, IDrugState } from '../types/types';
 
 const initialState: IDrugState = {
-  drugList: [], // список лекарств, полученный из БД
-  drugListSearch: [], // список лекарств по поиску (фильтрует из drugList)
-  drugListFilter: [], // список отфильтрованных лекарств от списка в поиске (фильтрует из drugListSearch)
+  drugList: [], // список лекарств
+  search: '', // значение строки поиска
   filterList: {
     action: [], // список фильтров по действию
-    type: [] // список фильтров по типу
+    type: [], // список фильтров по типу
   },
   fetchStatus: 'idle', // статус загрузки лекарств из БД
-  filterStatus: false // статус активности фильтрации
 };
 
 // получение лекарств из БД
@@ -28,81 +26,38 @@ export const drugSlice = createSlice({
   name: '@@drugs',
   initialState,
   reducers: {
-    // очищаем фильтры
-    clearFilters: (state) => {
-      state.filterStatus = initialState.filterStatus; // статус фильтрации - обнуляем
-      state.drugListFilter = initialState.drugListFilter; // список фильтрованных лекарств - обнуляем
-      state.filterList = initialState.filterList; // список фильтров - обнуляем
+    // очищение списков фильтров
+    clearFilterList: (state) => {
+      state.filterList = initialState.filterList;
     },
-    // поиск лекарств
-    drugSearch: (state, action: PayloadAction<string>) => {
-      const regexp = new RegExp(action.payload, 'i'); // регулярка с введенными данными из input
-      state.drugListSearch = state.drugList.filter(drug => regexp.test(drug.name)); // оставляем в списке по поиску - что подошло
+    // добавление значения строки поиска
+    addSearchValue: (state, action: PayloadAction<string>) => {
+      state.search = action.payload;
     },
     // добавление списка фильтров по действию
     addFilterListByAction: (state, action: PayloadAction<string[]>) => {
-      state.filterStatus = true; // статус фильтрации - включаем
-      state.filterList.action = action.payload; // добавляем список фильтров
+      state.filterList.action = action.payload;
     },
     // добавление списка фильтров по типу
     addFilterListByType: (state, action: PayloadAction<string[]>) => {
-      state.filterStatus = true; // статус фильтрации - включаем
-      state.filterList.type = action.payload; // добавляем список фильтров
-    },
-    // функция полной фильтрации по всем видам (действию, типу)
-    generalFiltrationDrugs: (state) => {
-      const temporary: IDrug[] = []; // времянка1
-
-      // перебираем список чекнутых категорий по действию
-      state.filterList.action.forEach(actionName => {
-        // добавляем во времянку отфильтрованные лекарства из списка по поиску, которые: отсутствуют во времянке и содержат чекнутую категорию
-        temporary.push(...state.drugListSearch.filter(drug => !temporary.includes(drug) && drug.categories.includes(actionName)));
-      });
-
-      // перебираем список чекнутых категорий по типу
-      state.filterList.type.forEach(typeName => {
-        // добавляем во времянку отфильтрованные лекарства из списка по поиску, которые: отсутствуют во времянке и содержат чекнутую категорию
-        temporary.push(...state.drugListSearch.filter(drug => !temporary.includes(drug) && drug.type === typeName));
-      });
-
-      // если есть оба списка с фильтрами
-      if (state.filterList.action.length > 0 && state.filterList.type.length > 0) {
-        // времянка2
-        const temporary2 = temporary.filter(drug => {
-          // ищем пересечения в списке фильтрации по действию и в списке лекарства
-          const intersection = state.filterList.action.filter(actionNameFilter => drug.categories.includes(actionNameFilter));
-          // оставляем лекарства, в которых есть совпадения (действие, тип)
-          return intersection.length > 0 && state.filterList.type.includes(drug.type);
-        });
-        state.drugListFilter = [...temporary2]; // заменяем список фильтрованных лекарств времянкой2
-      } else {
-        state.drugListFilter = [...temporary]; // иначе заменяем список фильтрованных лекарств времянкой1
-      }
+      state.filterList.type = action.payload;
     },
     // сортировка по возрастанию
-    drugSortAsc: (state, action: PayloadAction<'filter' | 'search'>) => {
-      (action.payload === 'search' ? state.drugListSearch : state.drugListFilter).sort((a, b) => {
-        if (a.name > b.name) {
-          return 1;
-        }
-        if (a.name < b.name) {
-          return -1;
-        }
-        return 0;
-      });
-    },
+    // drugSortAsc: (state, action: PayloadAction<'filter' | 'search'>) => {
+    //   (action.payload === 'search' ? state.drugListSearch : state.drugListFilter).sort((a, b) => {
+    //     if (a.name > b.name) return 1;
+    //     else if (a.name < b.name) return -1;
+    //     else return 0;
+    //   });
+    // },
     // сортировка по убыванию
-    drugSortDesc: (state, action: PayloadAction<'filter' | 'search'>) => {
-      (action.payload === 'search' ? state.drugListSearch : state.drugListFilter).sort((a, b) => {
-        if (a.name < b.name) {
-          return 1;
-        }
-        if (a.name > b.name) {
-          return -1;
-        }
-        return 0;
-      });
-    }
+    // drugSortDesc: (state, action: PayloadAction<'filter' | 'search'>) => {
+    //   (action.payload === 'search' ? state.drugListSearch : state.drugListFilter).sort((a, b) => {
+    //     if (a.name < b.name) return 1;
+    //     else if (a.name > b.name) return -1;
+    //     else return 0;
+    //   });
+    // },
   },
   extraReducers: (builder) => {
     builder
@@ -111,8 +66,7 @@ export const drugSlice = createSlice({
       })
       .addCase(fetchDrugList.fulfilled, (state, action: PayloadAction<IDrug[]>) => {
         state.fetchStatus = 'idle';
-        state.drugList = action.payload; // добавляем в главный список лекарств
-        state.drugListSearch = action.payload; // дублируем в список по поиску
+        state.drugList = action.payload;
       })
       .addCase(fetchDrugList.rejected, (state) => {
         state.fetchStatus = 'failed';
@@ -120,13 +74,46 @@ export const drugSlice = createSlice({
   },
 });
 
-export const { clearFilters, addFilterListByAction, addFilterListByType, drugSearch, drugSortAsc, drugSortDesc, generalFiltrationDrugs } = drugSlice.actions;
+export const { clearFilterList, addSearchValue, addFilterListByAction, addFilterListByType } = drugSlice.actions;
 
 export const selectDrugState = (state: RootState) => state.drug;
 export const selectDrugList = (state: RootState) => state.drug.drugList;
-export const selectDrugListSearch = (state: RootState) => state.drug.drugListSearch;
-export const selectDrugListFilter = (state: RootState) => state.drug.drugListFilter;
+export const selectSearchValue = (state: RootState) => state.drug.search;
 export const selectFilterList = (state: RootState) => state.drug.filterList;
-export const selectFilterStatus = (state: RootState) => state.drug.filterStatus;
+export const selectFetchStatus = (state: RootState) => state.drug.fetchStatus;
+export const selectVisibleDrugs = (state: RootState, onlySearch?: boolean) => {
+  // список фильтрованных лекарств по поиску
+  const visibleDrugsOnSearch = state.drug.drugList.filter(drug => drug.name.toLowerCase().includes(state.drug.search.toLowerCase()));
+  // если используется select только для отображения лекарств по поиску (для списка фильтров)
+  if (onlySearch) return visibleDrugsOnSearch;
+
+  const temporary: IDrug[] = []; // времянка1 для лекарств с одним видом фильтров
+
+  // перебираем список чекнутых категорий по действию
+  state.drug.filterList.action.forEach(actionName => {
+    // добавляем во времянку отфильтрованные лекарства из списка по поиску, которые: отсутствуют во времянке и содержат чекнутую категорию
+    temporary.push(...visibleDrugsOnSearch.filter(drug => !temporary.includes(drug) && drug.categories.includes(actionName)));
+  });
+
+  // перебираем список чекнутых категорий по типу
+  state.drug.filterList.type.forEach(typeName => {
+    // добавляем во времянку отфильтрованные лекарства из списка по поиску, которые: отсутствуют во времянке и содержат чекнутую категорию
+    temporary.push(...visibleDrugsOnSearch.filter(drug => !temporary.includes(drug) && drug.type === typeName));
+  });
+
+  // если есть оба списка фильтров
+  if (state.drug.filterList.action.length > 0 && state.drug.filterList.type.length > 0) {
+    // времянка2
+    const temporary2 = temporary.filter(drug => {
+      // ищем пересечения в списке фильтрации по действию и в списке лекарства из времянки1
+      const intersection = state.drug.filterList.action.filter(actionNameFilter => drug.categories.includes(actionNameFilter));
+      // оставляем лекарства, в которых есть совпадения (действие, тип)
+      return intersection.length > 0 && state.drug.filterList.type.includes(drug.type);
+    });
+    return temporary2;
+  }
+  else if (state.drug.filterList.action.length > 0 || state.drug.filterList.type.length > 0) return temporary;
+  else return visibleDrugsOnSearch;
+};
 
 export default drugSlice.reducer;

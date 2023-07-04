@@ -1,27 +1,27 @@
-import { useEffect } from 'react';
+// import { useEffect } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faArrowUpWideShort, faArrowDownWideShort } from '@fortawesome/free-solid-svg-icons';
-import { useAppDispatch, useAppSelector } from '../../store/hooks';
-import { drugSortAsc, drugSortDesc, selectDrugState } from '../../store/drugSlice';
+// import { useAppDispatch, useAppSelector } from '../../store/hooks';
+// import { /* drugSortAsc, drugSortDesc, */ selectDrugState } from '../../store/drugSlice';
 import { colorPrimary } from '../../constants/colors';
 import { ISortProps } from './Sort.props';
 import styles from './Sort.module.scss';
 
 const Sort = ({ activeSort, setActiveSort }: ISortProps): JSX.Element => {
-	const dispatch = useAppDispatch();
-	const drugState = useAppSelector(selectDrugState); // весь state
+	// const dispatch = useAppDispatch();
+	// const drugState = useAppSelector(selectDrugState); // весь state
 
 	// следит за состоянием флага фильтра
-	useEffect(() => {
-		setActiveSort(null);
-	}, [drugState.filterStatus]);
+	// useEffect(() => {
+	// 	setActiveSort(null);
+	// }, [drugState.filterStatus]);
 
 	// сортировка по возрастанию
 	const sortAscHandler = () => {
 		if (activeSort !== 'asc') {
 			setActiveSort('asc');
-			if (drugState.filterStatus) dispatch(drugSortAsc('filter'));
-			else dispatch(drugSortAsc('search'));
+			// if (drugState.filterStatus) dispatch(drugSortAsc('filter'));
+			// else dispatch(drugSortAsc('search'));
 		}
 	};
 
@@ -29,8 +29,8 @@ const Sort = ({ activeSort, setActiveSort }: ISortProps): JSX.Element => {
 	const sortDescHandler = () => {
 		if (activeSort !== 'desc') {
 			setActiveSort('desc');
-			if (drugState.filterStatus) dispatch(drugSortDesc('filter'));
-			else dispatch(drugSortDesc('search'));
+			// if (drugState.filterStatus) dispatch(drugSortDesc('filter'));
+			// else dispatch(drugSortDesc('search'));
 		}
 	};
 

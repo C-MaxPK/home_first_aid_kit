@@ -3,20 +3,20 @@ import { InputAdornment, TextField } from '@mui/material';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faXmark } from '@fortawesome/free-solid-svg-icons';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
-import { clearFilters, drugSearch, selectFilterStatus } from '../../store/drugSlice';
+import { addSearchValue, clearFilterList, selectFilterList } from '../../store/drugSlice';
 // import { ISearchProps } from './Search.props';
 
 const Search = (/* { activeSort, setActiveSort }: ISearchProps */): JSX.Element => {
 	const [inputValue, setInputValue] = useState<string>(''); // строка поиска input
 	const inputRef = useRef<HTMLInputElement>(); // ссылка на input
 	const dispatch = useAppDispatch();
-	const filterStatus = useAppSelector(selectFilterStatus); // статус фильтрации
+	const filterList = useAppSelector(selectFilterList); // store - списки пунктов для фильтрации
 
-	// следит за input'ом
+	// следим за input'ом
 	useEffect(() => {
-		filterStatus && dispatch(clearFilters()); // если фильтрация была в работе - то очищаем фильтры
+		(filterList.action.length > 0 || filterList.type.length > 0) && dispatch(clearFilterList()); // если списки фильтров не пустые - очищаем
 		// if (activeSort !== null) setActiveSort(null); // если сортировка была - сбрасываем
-		dispatch(drugSearch(inputValue)); // поиск по введенным данным в input
+		dispatch(addSearchValue(inputValue)); // добавление значения строки поиска в store
 	}, [dispatch, inputValue]);
 
 	// обработчик очистки input'а
@@ -40,7 +40,7 @@ const Search = (/* { activeSort, setActiveSort }: ISearchProps */): JSX.Element 
 			InputProps={{
 				endAdornment: (
 					<InputAdornment position="end" >
-						{inputValue.length > 0 && <FontAwesomeIcon icon={faXmark} onClick={clearHandler} style={{ cursor: 'pointer ' }} />}
+						{inputValue.length > 0 && <FontAwesomeIcon icon={faXmark} onClick={clearHandler} style={{ cursor: 'pointer' }} />}
 					</InputAdornment>
 				),
 			}}

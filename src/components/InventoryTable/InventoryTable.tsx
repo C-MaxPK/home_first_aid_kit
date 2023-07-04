@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react';
 import { DataGrid, GridColDef, GridToolbarQuickFilter, ruRU } from '@mui/x-data-grid';
 import { Box } from '@mui/material';
-import { useAppDispatch, useAppSelector } from '../../store/hooks';
-import { fetchDrugList, selectDrugList } from '../../store/drugSlice';
+import { useAppSelector } from '../../store/hooks';
+import { selectDrugList } from '../../store/drugSlice';
 import { declination } from '../../helpers/declination';
 import { getOverdueDrug } from '../../helpers/overdue';
 import { IRowTable } from '../../types/types';
@@ -18,7 +18,6 @@ const CustomToolbar = (): JSX.Element => {
 
 const InventoryTable = (): JSX.Element => {
 	const [drugListForTable, setDrugListForTable] = useState<IRowTable[]>([]); // список лекарств, форматированных для таблицы
-	const dispatch = useAppDispatch();
 	const drugList = useAppSelector(selectDrugList); // список лекарств
 	const columns: GridColDef[] = [
 		{ field: 'name', headerName: 'Название', width: 350, headerClassName: styles.header },
@@ -27,11 +26,6 @@ const InventoryTable = (): JSX.Element => {
 		{ field: 'sellBy', headerName: 'Срок годности', width: 150, headerClassName: styles.header },
 		{ field: 'overdue', headerName: 'Просрок', width: 150, headerClassName: styles.header }
 	];
-
-	// разово - получает список лекарств из БД
-	useEffect(() => {
-		drugList.length === 0 && dispatch(fetchDrugList()); // если не был загружен до этого
-	}, [dispatch]);
 
 	// следит за списком лекарств
 	useEffect(() => {

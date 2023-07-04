@@ -4,8 +4,6 @@ const getSetOfWordsForDeclension = (title: string): [string, string, string] => 
 			return ['флакон', 'флакона', 'флаконов'];
 		case 'ампула':
 			return ['ампула', 'ампулы', 'ампул'];
-		case 'штука':
-			return ['штука', 'штуки', 'штук'];
 		case 'пластина':
 			return ['пластина', 'пластины', 'пластин'];
 		case 'тюбик':

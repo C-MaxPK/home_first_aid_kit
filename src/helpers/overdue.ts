@@ -9,7 +9,7 @@ export const getOverdueDrug = (sellBy: string): boolean => {
 		const lastDayDate = new Date(getYear, getMonth, 0).getDate(); // получаем последнее число месяца
 		const dateUSFormat = `${getMonth}/${lastDayDate}/${getYear}`; // дата в US формате
 		if (currentDate > Date.parse(`${dateUSFormat} 23:59:59`)) return true;
-		return false;
+		else return false;
 	} else {
 		// если дата полная
 		const getDay = sellBy[0] + sellBy[1]; // получаем день

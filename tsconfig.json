@@ -4,7 +4,7 @@
     "lib": [
       "dom",
       "dom.iterable",
-      "esnext"
+      "esnext",
     ],
     "allowJs": true,
     "skipLibCheck": true,
@@ -21,9 +21,9 @@
     "jsx": "react-jsx",
     "noUnusedLocals": true,
     "noUnusedParameters": true,
-    "allowUnreachableCode": true
+    "allowUnreachableCode": true,
   },
   "include": [
-    "src"
-  ]
+    "src",
+  ],
 }

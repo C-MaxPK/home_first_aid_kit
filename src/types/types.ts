@@ -10,14 +10,12 @@ export interface IDrug {
 
 export interface IDrugState {
 	drugList: IDrug[];
-	drugListSearch: IDrug[];
-	drugListFilter: IDrug[];
+	search: string;
 	filterList: {
 		action: string[];
 		type: string[];
 	};
 	fetchStatus: 'idle' | 'loading' | 'failed';
-	filterStatus: boolean;
 }
 
 export type ActiveSortType = 'asc' | 'desc' | null;
