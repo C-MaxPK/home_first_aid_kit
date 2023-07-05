@@ -1,0 +1,16 @@
+@import '../../styles/variables.scss';
+
+.arrowUp {
+	position: fixed;
+	right: 15px;
+	bottom: 15px;
+	width: 45px;
+	height: 45px;
+	border: 3px solid $colorSecondary;
+	border-radius: 6px;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	cursor: pointer;
+	backdrop-filter: blur(2px);
+}
