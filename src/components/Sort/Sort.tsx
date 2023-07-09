@@ -22,11 +22,13 @@ const Sort = (): JSX.Element => {
 				icon={faArrowUpWideShort}
 				onClick={() => sortHandler('asc')}
 				style={{ cursor: 'pointer', color: sortType !== 'asc' ? colorSecondary : colorPrimary }}
+				title='Сортировка по возрастанию'
 			/>
 			<FontAwesomeIcon
 				icon={faArrowDownWideShort}
 				onClick={() => sortHandler('desc')}
 				style={{ cursor: 'pointer', color: sortType !== 'desc' ? colorSecondary : colorPrimary }}
+				title='Сортировка по убыванию'
 			/>
 		</div>
 	);

@@ -1,0 +1,71 @@
+import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { Avatar, IconButton, ListItemIcon, Menu, MenuItem } from '@mui/material';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faArrowRightFromBracket, faCirclePlus, faListCheck, faUser } from '@fortawesome/free-solid-svg-icons';
+import { useAppDispatch } from '../../store/hooks';
+import { logout } from '../../store/userSlice';
+import { colorPrimary } from '../../constants/colors';
+
+const AvatarIcon = (): JSX.Element => {
+	const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+	const open = Boolean(anchorEl);
+
+	const dispatch = useAppDispatch();
+	const navigate = useNavigate(); // hook для навигации
+
+	// обработчик открытия меню
+	const handleClick = (event: React.MouseEvent<HTMLButtonElement>): void => {
+		setAnchorEl(event.currentTarget);
+	};
+
+	// обработчик закрытия меню
+	const handleClose = (): void => {
+		setAnchorEl(null);
+	};
+
+	return (
+		<div>
+			<IconButton onClick={handleClick} size="small">
+				<Avatar sx={{ bgcolor: colorPrimary }}>
+					<FontAwesomeIcon icon={faUser} />
+				</Avatar>
+			</IconButton>
+
+			<Menu
+				id="basic-menu"
+				anchorEl={anchorEl}
+				open={open}
+				onClose={handleClose}
+				MenuListProps={{
+					'aria-labelledby': 'basic-button',
+				}}
+				anchorOrigin={{
+					vertical: 'bottom',
+					horizontal: 'center',
+				}}
+			>
+				<MenuItem>
+					<ListItemIcon>
+						<FontAwesomeIcon icon={faCirclePlus} color={colorPrimary} size='lg' />
+					</ListItemIcon>
+					Добавить лекарство
+				</MenuItem>
+				<MenuItem onClick={() => navigate('inventory')}>
+					<ListItemIcon>
+						<FontAwesomeIcon icon={faListCheck} size='lg' />
+					</ListItemIcon>
+					Инвентаризация
+				</MenuItem>
+				<MenuItem onClick={() => dispatch(logout())}>
+					<ListItemIcon>
+						<FontAwesomeIcon icon={faArrowRightFromBracket} size='lg' />
+					</ListItemIcon>
+					Выход
+				</MenuItem>
+			</Menu>
+		</div>
+	);
+};
+
+export default AvatarIcon;

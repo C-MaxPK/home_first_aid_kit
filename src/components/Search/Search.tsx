@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { InputAdornment, TextField } from '@mui/material';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faXmark } from '@fortawesome/free-solid-svg-icons';
+import { faMagnifyingGlass, faXmark } from '@fortawesome/free-solid-svg-icons';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import { addSearchValue, changeSort, clearFilterList, selectFilterList, selectSortType } from '../../store/drugSlice';
 
@@ -30,7 +30,7 @@ const Search = (): JSX.Element => {
 		<TextField
 			id="outlined-basic"
 			inputRef={inputRef}
-			label="Поиск по лекарству..."
+			label="Поиск..."
 			variant="outlined"
 			size="small"
 			color="success"
@@ -41,7 +41,11 @@ const Search = (): JSX.Element => {
 			InputProps={{
 				endAdornment: (
 					<InputAdornment position="end" >
-						{inputValue.length > 0 && <FontAwesomeIcon icon={faXmark} onClick={clearHandler} style={{ cursor: 'pointer' }} />}
+						{inputValue.length > 0 ?
+							<FontAwesomeIcon icon={faXmark} onClick={clearHandler} style={{ cursor: 'pointer' }} />
+							:
+							<FontAwesomeIcon icon={faMagnifyingGlass} />
+						}
 					</InputAdornment>
 				),
 			}}

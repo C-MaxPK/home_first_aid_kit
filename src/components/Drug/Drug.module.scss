@@ -42,6 +42,12 @@
 			}
 		}
 
+		&Amount {
+			display: flex;
+			justify-content: space-between;
+			align-items: center;
+		}
+
 		&Type {
 			color: $colorSecondary;
 			text-align: right;
@@ -72,6 +78,11 @@
 	&Name {
 		color: $colorPrimary;
 		text-align: center;
+	}
+
+	&Control {
+		display: flex;
+		gap: 10px;
 	}
 
 	&SignOverdue {

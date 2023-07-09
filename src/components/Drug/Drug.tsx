@@ -1,9 +1,14 @@
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faPencil, faTrashCan } from '@fortawesome/free-solid-svg-icons';
+import useAuth from '../../hooks/useAuth';
 import { declination } from '../../helpers/declination';
 import { getOverdueDrug } from '../../helpers/overdue';
+import { colorPrimary } from '../../constants/colors';
 import { IDrugProps } from './Drug.props';
 import styles from './Drug.module.scss';
 
 const Drug = ({ drug }: IDrugProps): JSX.Element => {
+	const { isAuth } = useAuth(); // hook проверки авторизации
 
 	return (
 		<div className={drug.sellBy !== '-' ? styles.drug : [styles.drug, styles.drugNoSellBy].join(' ')}>
@@ -16,8 +21,14 @@ const Drug = ({ drug }: IDrugProps): JSX.Element => {
 				<div className={styles.drugDescType}>
 					{drug.type}
 				</div>
-				<div >
-					<span className={styles.drugDescTitle}>Остаток:</span> <span>{drug.amount} {declination(drug.amount, drug.package)}</span>
+				<div className={styles.drugDescAmount}>
+					<div>
+						<span className={styles.drugDescTitle}>Остаток:</span> <span>{drug.amount} {declination(drug.amount, drug.package)}</span>
+					</div>
+					{isAuth && <div className={styles.drugControl}>
+						<FontAwesomeIcon icon={faPencil} size='sm' title='Изменить количество' style={{ cursor: 'pointer', color: colorPrimary }} />
+						<FontAwesomeIcon icon={faTrashCan} size='sm' title='Удалить лекарство' style={{ cursor: 'pointer', color: '#d72d2d' }} />
+					</div>}
 				</div>
 
 				<div className={drug.sellBy === '-' ? styles.drugDescTitleNoSellBy : ''}>

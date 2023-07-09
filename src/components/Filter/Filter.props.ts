@@ -4,6 +4,6 @@ export interface IFilterProps {
 	otherFilterListLength: number; // при увеличении фильтров сделать number[]
 	addFilterListFunc: (payload: string[]) => {
 		payload: string[];
-		type: "@@drugs/addFilterListByAction" | "@@drugs/addFilterListByType";
+		type: "@@drug/addFilterListByAction" | "@@drug/addFilterListByType";
 	}
 }

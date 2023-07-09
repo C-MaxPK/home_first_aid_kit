@@ -15,7 +15,7 @@ const initialState: IDrugState = {
 
 // получение лекарств из БД
 export const fetchDrugList = createAsyncThunk(
-  '@@fetchDrugList',
+  '@@drug/fetch',
   async (): Promise<IDrug[]> => {
     const response = await fetch('./db/drugs.json');
     const data: IDrug[] = await response.json();
@@ -24,7 +24,7 @@ export const fetchDrugList = createAsyncThunk(
 );
 
 export const drugSlice = createSlice({
-  name: '@@drugs',
+  name: '@@drug',
   initialState,
   reducers: {
     // очищение списков фильтров

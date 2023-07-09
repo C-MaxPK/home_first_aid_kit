@@ -10,16 +10,16 @@ const Drugs = (): JSX.Element => {
 	const fetchStatus = useAppSelector(selectFetchStatus); // store - статус загрузки лекарств
 	const visibleDrugs = useAppSelector(selectVisibleDrugs); // store - фильтрованный список лекарств
 
+	// сортировка
 	const sorting = (a: IDrug, b: IDrug): 1 | 0 | -1 => {
 		if (sortType === 'default') {
 			if (a.id > b.id) return 1;
 			else if (a.id < b.id) return -1;
-			else return 0;
 		} else {
 			if (a.name > b.name) return sortType === 'asc' ? 1 : -1;
 			else if (a.name < b.name) return sortType === 'asc' ? -1 : 1;
-			else return 0;
 		}
+		return 0;
 	};
 
 	return (

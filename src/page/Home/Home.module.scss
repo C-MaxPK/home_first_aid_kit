@@ -42,11 +42,3 @@
     display: block;
   }
 }
-
-.link {
-  text-decoration: none;
-
-  @media (max-width: 845px) {
-    display: none;
-  }
-}
