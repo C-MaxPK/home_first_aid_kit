@@ -1,7 +1,7 @@
 import { useAppSelector } from '../../store/hooks';
 import { selectFetchStatus, selectSortType, selectVisibleDrugs } from '../../store/drugSlice';
 import { declination } from '../../helpers/declination';
-import { IDrug } from '../../types/types';
+import { IDrug } from '../../types/drugTypes';
 import Drug from '../Drug/Drug';
 import styles from './Drugs.module.scss';
 

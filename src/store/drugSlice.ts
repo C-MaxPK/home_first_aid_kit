@@ -1,6 +1,6 @@
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { RootState } from './store';
-import { ActiveSortType, IDrug, IDrugState } from '../types/types';
+import { ActiveSortType, IDrug, IDrugState } from '../types/drugTypes';
 
 const initialState: IDrugState = {
   drugList: [], // список лекарств

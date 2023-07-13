@@ -3,7 +3,7 @@ import { faArrowUpWideShort, faArrowDownWideShort } from '@fortawesome/free-soli
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import { changeSort, selectSortType } from '../../store/drugSlice';
 import { colorPrimary, colorSecondary } from '../../constants/colors';
-import { ActiveSortType } from '../../types/types';
+import { ActiveSortType } from '../../types/drugTypes';
 import styles from './Sort.module.scss';
 
 const Sort = (): JSX.Element => {
