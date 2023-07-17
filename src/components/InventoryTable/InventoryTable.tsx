@@ -5,7 +5,7 @@ import { useAppSelector } from '../../store/hooks';
 import { selectDrugList } from '../../store/drugSlice';
 import { declination } from '../../helpers/declination';
 import { getOverdueDrug } from '../../helpers/overdue';
-import { IRowTable } from '../../types/types';
+import { IRowTable } from '../../types/tableTypes';
 import styles from './InventoryTable.module.scss';
 
 const CustomToolbar = (): JSX.Element => {

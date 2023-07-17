@@ -1,5 +1,6 @@
 import { useEffect } from 'react';
-import { createBrowserRouter, RouterProvider } from "react-router-dom";
+import { createBrowserRouter, redirect, RouterProvider } from "react-router-dom";
+import { useCookies } from 'react-cookie';
 import { useAppDispatch } from './store/hooks';
 import { fetchDrugList } from './store/drugSlice';
 import { onAuthState } from './store/userSlice';
@@ -9,6 +10,8 @@ import NotFound from './page/NotFound/NotFound';
 
 const App = () => {
 	const dispatch = useAppDispatch();
+	const [cookies] = useCookies(['isAuth']); // hook для работы с cookie
+
 	const router = createBrowserRouter([
 		{
 			path: "/",
@@ -18,6 +21,11 @@ const App = () => {
 		{
 			path: "/inventory",
 			element: <Inventory />,
+			loader: () => {
+				// если есть запись в cookie об авторизации - разрешаем роут, иначе на главную
+				if (cookies.isAuth) return null;
+				else return redirect('/');
+			}
 		},
 	]);
 

@@ -1,4 +1,5 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import { useCookies } from 'react-cookie';
 import { Button } from '@mui/material';
 import useAuth from '../../hooks/useAuth';
 import Search from '../../components/Search/Search';
@@ -13,7 +14,15 @@ import styles from './Home.module.scss';
 
 const Home = (): JSX.Element => {
 	const [showFormLogin, setShowFormLogin] = useState<boolean>(false); // показ формы авторизации
+	const [_, setCookie, removeCookie] = useCookies(['isAuth']); // hook для работы с cookie
 	const { isAuth } = useAuth(); // hook проверки авторизации
+
+	// следим за статусом авторизации
+	useEffect(() => {
+		// если авторизован - записываем (обновляем) в cookie на неделю, иначе удаляем запись
+		if (isAuth) setCookie(`isAuth`, true, { path: '/', maxAge: 604800 });
+		else removeCookie('isAuth');
+	}, [isAuth]);
 
 	return (
 		<div className={styles.app}>
