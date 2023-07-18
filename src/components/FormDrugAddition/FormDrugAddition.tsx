@@ -74,7 +74,7 @@ const FormDrugAddition = ({ showFormDrugAddition, setShowFormDrugAddition }: IFo
 							size="small"
 							value={type}
 							onChange={(_, value) => value && setType(value)}
-							renderInput={(params) => <TextField {...params} required label="Тип" color='success' />}
+							renderInput={(params) => <TextField {...params} required label="Тип" color='success' onChange={e => setType(e.target.value)} />}
 						/>
 					</FormControl>
 					<FormControl fullWidth margin='dense'>
@@ -99,7 +99,7 @@ const FormDrugAddition = ({ showFormDrugAddition, setShowFormDrugAddition }: IFo
 								size="small"
 								value={pack}
 								onChange={(_, value) => value && setPack(value)}
-								renderInput={(params) => <TextField {...params} required label="Упаковка" color='success' />}
+								renderInput={(params) => <TextField {...params} required label="Упаковка" color='success' onChange={e => setPack(e.target.value)} />}
 								sx={{ width: '50%' }}
 							/>
 						</div>
@@ -112,7 +112,7 @@ const FormDrugAddition = ({ showFormDrugAddition, setShowFormDrugAddition }: IFo
 								size="small"
 								value={categories[0]} // на доработку
 								onChange={(_, value) => value && setCategories(prev => [...prev, prev[0] = value])} // на доработку
-								renderInput={(params) => <TextField {...params} required label="Категории" color='success' />}
+								renderInput={(params) => <TextField {...params} required label="Категории" color='success' onChange={e => setCategories(e.target.value)} />}
 								sx={{ width: '100%' }}
 							/> */}
 						<InputLabel id="categories-label" color='success'>Категории</InputLabel>

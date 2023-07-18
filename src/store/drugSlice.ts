@@ -1,5 +1,5 @@
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { collection, doc, getDocs, setDoc } from "firebase/firestore";
+import { collection, deleteDoc, doc, getDocs, setDoc } from "firebase/firestore";
 import { nanoid } from 'nanoid'
 import { RootState } from './store';
 import { db } from '../firebase';
@@ -52,6 +52,15 @@ export const addDrug = createAsyncThunk(
     } catch (e) {
       dispatch(changeStatusAddDrug('failed'));
     }
+  }
+);
+
+// удаление лекарства из БД firebase
+export const deleteDrug = createAsyncThunk(
+  '@@drug/deleteDrug',
+  async (id: string, { dispatch }) => {
+    await deleteDoc(doc(db, "drugs", id));
+    dispatch(fetchDrugList());
   }
 );
 

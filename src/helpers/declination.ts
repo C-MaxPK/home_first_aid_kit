@@ -18,8 +18,10 @@ const getSetOfWordsForDeclension = (title: string): [string, string, string] => 
 			return ['фильтр-пакет', 'фильтр-пакета', 'фильтр-пакетов'];
 		case 'лекарство':
 			return ['лекарство', 'лекарства', 'лекарств'];
-		default:
+		case 'штука':
 			return ['штука', 'штуки', 'штук'];
+		default:
+			return [title, title, title];
 	}
 };
 
