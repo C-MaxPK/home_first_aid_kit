@@ -1,6 +1,9 @@
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { collection, doc, getDocs, setDoc } from "firebase/firestore";
+import { nanoid } from 'nanoid'
 import { RootState } from './store';
-import { ActiveSortType, IDrug, IDrugState } from '../types/drugTypes';
+import { db } from '../firebase';
+import { ActiveSortType, IAddDrugProps, IDrug, IDrugState, Status } from '../types/drugTypes';
 
 const initialState: IDrugState = {
   drugList: [], // список лекарств
@@ -11,17 +14,55 @@ const initialState: IDrugState = {
   },
   sort: 'default',
   fetchStatus: 'idle', // статус загрузки лекарств из БД
+  addDrugStatus: 'idle', // статус добавления лекарства в БД
 };
 
-// получение лекарств из БД
+// получение лекарств из БД firebase
 export const fetchDrugList = createAsyncThunk(
   '@@drug/fetch',
   async (): Promise<IDrug[]> => {
-    const response = await fetch('./db/drugs.json');
-    const data: IDrug[] = await response.json();
+    const querySnapshot = await getDocs(collection(db, "drugs"));
+    const data: IDrug[] = [];
+    querySnapshot.forEach((doc) => {
+      data.push(doc.data() as IDrug);
+    });
     return data;
   }
 );
+
+// добавление лекарства в БД firebase
+export const addDrug = createAsyncThunk(
+  '@@drug/addDrug',
+  async ({ name, type, amount, pack, categories, sellBy }: IAddDrugProps, { dispatch, getState }) => {
+    const id = nanoid();
+    try {
+      await setDoc(doc(db, "drugs", id), {
+        id,
+        name: name.charAt(0).toUpperCase() + name.slice(1),
+        type: type.charAt(0).toUpperCase() + type.slice(1),
+        amount,
+        package: pack.charAt(0).toUpperCase() + pack.slice(1),
+        categories,
+        sellBy,
+        createdAt: new Date().toString(),
+        creator: (getState() as RootState).user.email,
+      });
+      dispatch(changeStatusAddDrug('idle'));
+      dispatch(fetchDrugList());
+    } catch (e) {
+      dispatch(changeStatusAddDrug('failed'));
+    }
+  }
+);
+
+// export const fetchDrugList = createAsyncThunk(
+//   '@@drug/fetch',
+//   async (): Promise<IDrug[]> => {
+//     const response = await fetch('./db/drugs.json');
+//     const data: IDrug[] = await response.json();
+//     return data;
+//   }
+// );
 
 export const drugSlice = createSlice({
   name: '@@drug',
@@ -47,6 +88,10 @@ export const drugSlice = createSlice({
     changeSort: (state, action: PayloadAction<ActiveSortType>) => {
       state.sort = action.payload;
     },
+    // изменение статуса добавления лекарства
+    changeStatusAddDrug: (state, action: PayloadAction<Status>) => {
+      state.addDrugStatus = action.payload;
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -59,11 +104,14 @@ export const drugSlice = createSlice({
       })
       .addCase(fetchDrugList.rejected, (state) => {
         state.fetchStatus = 'failed';
+      })
+      .addCase(addDrug.pending, (state) => {
+        state.addDrugStatus = 'loading';
       });
   },
 });
 
-export const { clearFilterList, addSearchValue, addFilterListByAction, addFilterListByType, changeSort } = drugSlice.actions;
+export const { clearFilterList, addSearchValue, addFilterListByAction, addFilterListByType, changeSort, changeStatusAddDrug } = drugSlice.actions;
 
 export const selectDrugState = (state: RootState) => state.drug;
 export const selectDrugList = (state: RootState) => state.drug.drugList;
@@ -71,9 +119,10 @@ export const selectSearchValue = (state: RootState) => state.drug.search;
 export const selectFilterList = (state: RootState) => state.drug.filterList;
 export const selectSortType = (state: RootState) => state.drug.sort;
 export const selectFetchStatus = (state: RootState) => state.drug.fetchStatus;
+export const selectAddDrugStatus = (state: RootState) => state.drug.addDrugStatus;
 export const selectVisibleDrugs = (state: RootState, onlySearch?: boolean) => {
   // список фильтрованных лекарств по поиску
-  const visibleDrugsOnSearch = state.drug.drugList.filter(drug => drug.name.toLowerCase().includes(state.drug.search.toLowerCase()));
+  const visibleDrugsOnSearch = state.drug.drugList.filter(drug => drug.name?.toLowerCase().includes(state.drug.search.toLowerCase()));
   // если используется select только для отображения лекарств по поиску (для списка фильтров)
   if (onlySearch) return visibleDrugsOnSearch;
 

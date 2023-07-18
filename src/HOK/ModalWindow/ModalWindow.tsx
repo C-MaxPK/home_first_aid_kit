@@ -8,6 +8,8 @@ const ModalWindow = ({ showModal, setShowModal, children }: IModalWindowProps): 
 		left: '50%',
 		transform: 'translate(-50%, -50%)',
 		minWidth: 300,
+		maxHeight: '95%',
+		overflow: 'auto',
 		bgcolor: 'background.paper',
 		borderRadius: '5px',
 		border: 'none',

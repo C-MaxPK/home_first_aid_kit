@@ -7,10 +7,12 @@ import { useAppDispatch } from '../../store/hooks';
 import useAuth from '../../hooks/useAuth';
 import { logout } from '../../store/userSlice';
 import { colorPrimary } from '../../constants/colors';
+import FormDrugAddition from '../FormDrugAddition/FormDrugAddition';
 
 const AvatarIcon = (): JSX.Element => {
 	const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
 	const open = Boolean(anchorEl);
+	const [showFormDrugAddition, setShowFormDrugAddition] = useState<boolean>(false); // показ формы добавления лекарства
 
 	const dispatch = useAppDispatch();
 	const navigate = useNavigate(); // hook для навигации
@@ -24,6 +26,12 @@ const AvatarIcon = (): JSX.Element => {
 	// обработчик закрытия меню
 	const handleClose = (): void => {
 		setAnchorEl(null);
+	};
+
+	// обработчик открытия формы добавления лекарства
+	const showFormHandler = (): void => {
+		setShowFormDrugAddition(true);
+		handleClose();
 	};
 
 	return (
@@ -51,7 +59,7 @@ const AvatarIcon = (): JSX.Element => {
 					{email}
 				</Typography>
 				<Divider />
-				<MenuItem>
+				<MenuItem onClick={showFormHandler}>
 					<ListItemIcon>
 						<FontAwesomeIcon icon={faCirclePlus} color={colorPrimary} size='lg' />
 					</ListItemIcon>
@@ -70,6 +78,8 @@ const AvatarIcon = (): JSX.Element => {
 					Выход
 				</MenuItem>
 			</Menu>
+
+			<FormDrugAddition showFormDrugAddition={showFormDrugAddition} setShowFormDrugAddition={setShowFormDrugAddition} />
 		</div>
 	);
 };

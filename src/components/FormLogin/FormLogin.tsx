@@ -48,6 +48,7 @@ const FormLogin = ({ showFormLogin, setShowFormLogin }: IFormLoginProps): JSX.El
 							variant="outlined"
 							size="small"
 							type="email"
+							color='success'
 							value={email}
 							onChange={e => setEmail(e.target.value)}
 						/>
@@ -60,6 +61,7 @@ const FormLogin = ({ showFormLogin, setShowFormLogin }: IFormLoginProps): JSX.El
 							variant="outlined"
 							size="small"
 							type="password"
+							color='success'
 							value={pass}
 							onChange={e => setPass(e.target.value)}
 						/>
@@ -71,7 +73,7 @@ const FormLogin = ({ showFormLogin, setShowFormLogin }: IFormLoginProps): JSX.El
 								Вход...
 							</Button>
 							:
-							<Button variant="outlined" type="submit">
+							<Button variant="outlined" type="submit" color='success'>
 								Войти
 							</Button>
 						}

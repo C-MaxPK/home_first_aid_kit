@@ -1,14 +1,26 @@
+export interface IAddDrugProps {
+	name: string;
+	type: string;
+	amount: number;
+	pack: string;
+	categories: string[];
+	sellBy: string;
+}
+
 export interface IDrug {
-	id: number; // или string (uid)
+	id: string;
 	name: string;
 	type: string;
 	amount: number;
 	package: string;
 	categories: string[];
 	sellBy: string;
+	createdAt: string;
+	creator: string;
 }
 
 export type ActiveSortType = 'asc' | 'desc' | 'default';
+export type Status = 'idle' | 'loading' | 'failed';
 
 export interface IDrugState {
 	drugList: IDrug[];
@@ -18,5 +30,6 @@ export interface IDrugState {
 		type: string[];
 	};
 	sort: ActiveSortType;
-	fetchStatus: 'idle' | 'loading' | 'failed';
+	fetchStatus: Status;
+	addDrugStatus: Status;
 }

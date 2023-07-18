@@ -13,8 +13,8 @@ const Drugs = (): JSX.Element => {
 	// сортировка
 	const sorting = (a: IDrug, b: IDrug): 1 | 0 | -1 => {
 		if (sortType === 'default') {
-			if (a.id > b.id) return 1;
-			else if (a.id < b.id) return -1;
+			if (a.createdAt > b.createdAt) return 1;
+			else if (a.createdAt < b.createdAt) return -1;
 		} else {
 			if (a.name > b.name) return sortType === 'asc' ? 1 : -1;
 			else if (a.name < b.name) return sortType === 'asc' ? -1 : 1;
@@ -41,7 +41,7 @@ const Drugs = (): JSX.Element => {
 				{visibleDrugs
 					.sort(sorting)
 					.map(drug => (
-						<Drug key={drug.id} drug={drug} />
+						<Drug key={drug.createdAt} drug={drug} />
 					))
 				}
 			</div>
