@@ -3,7 +3,7 @@ import { collection, deleteDoc, doc, getDocs, setDoc } from "firebase/firestore"
 import { nanoid } from 'nanoid'
 import { RootState } from './store';
 import { db } from '../firebase';
-import { ActiveSortType, IAddDrugProps, IDrug, IDrugState, Status } from '../types/drugTypes';
+import { ActiveSortType, IAddDrugProps, IDrug, IDrugState, IEditDrugProps, Status } from '../types/drugTypes';
 
 const initialState: IDrugState = {
   drugList: [], // список лекарств
@@ -55,6 +55,24 @@ export const addDrug = createAsyncThunk(
   }
 );
 
+// изменение лекарства в БД firebase
+export const editDrug = createAsyncThunk(
+  '@@drug/editDrug',
+  async ({ id, amount }: IEditDrugProps, { dispatch, getState }) => {
+    try {
+      const drugRef = doc(db, 'drugs', id);
+      await setDoc(drugRef, {
+        amount,
+        editedAt: new Date().toString(),
+        editor: (getState() as RootState).user.email,
+      }, { merge: true });
+      dispatch(fetchDrugList());
+    } catch (e) {
+      console.log('Ошибка редактирования', e)
+    }
+  }
+);
+
 // удаление лекарства из БД firebase
 export const deleteDrug = createAsyncThunk(
   '@@drug/deleteDrug',
@@ -63,15 +81,6 @@ export const deleteDrug = createAsyncThunk(
     dispatch(fetchDrugList());
   }
 );
-
-// export const fetchDrugList = createAsyncThunk(
-//   '@@drug/fetch',
-//   async (): Promise<IDrug[]> => {
-//     const response = await fetch('./db/drugs.json');
-//     const data: IDrug[] = await response.json();
-//     return data;
-//   }
-// );
 
 export const drugSlice = createSlice({
   name: '@@drug',

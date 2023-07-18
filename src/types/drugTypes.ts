@@ -7,6 +7,11 @@ export interface IAddDrugProps {
 	sellBy: string;
 }
 
+export interface IEditDrugProps {
+	id: string;
+	amount: number;
+}
+
 export interface IDrug {
 	id: string;
 	name: string;
@@ -17,6 +22,8 @@ export interface IDrug {
 	sellBy: string;
 	createdAt: string;
 	creator: string;
+	editedAt?: string;
+	editor?: string;
 }
 
 export type ActiveSortType = 'asc' | 'desc' | 'default';

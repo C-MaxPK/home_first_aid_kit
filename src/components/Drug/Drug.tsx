@@ -1,20 +1,30 @@
 import { useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faPencil, faTrashCan } from '@fortawesome/free-solid-svg-icons';
+import { faCheck, faPencil, faTrashCan, faXmark } from '@fortawesome/free-solid-svg-icons';
 import { useAppDispatch } from '../../store/hooks';
 import useAuth from '../../hooks/useAuth';
-import { deleteDrug } from '../../store/drugSlice';
+import { deleteDrug, editDrug } from '../../store/drugSlice';
 import { declination } from '../../helpers/declination';
 import { getOverdueDrug } from '../../helpers/overdue';
-import { colorPrimary } from '../../constants/colors';
+import { colorPrimary, colorRed } from '../../constants/colors';
 import AlertDialog from '../AlertDialog/AlertDialog';
 import { IDrugProps } from './Drug.props';
 import styles from './Drug.module.scss';
 
 const Drug = ({ drug }: IDrugProps): JSX.Element => {
 	const [showAlertDialog, setShowAlertDialog] = useState<boolean>(false); // показ диалогового окна об удалении лекарства
-	const { isAuth } = useAuth(); // hook проверки авторизации
+	const [showAmountEditor, setShowAmountEditor] = useState<boolean>(false); // показ редактора остатка
+	const [inputAmount, setInputAmount] = useState<number>(drug.amount); // остаток лекарства
+
 	const dispatch = useAppDispatch();
+	const { isAuth } = useAuth(); // hook проверки авторизации
+
+	// обработчик изменения остатка лекарства
+	const changeAmountHandler = (): void => {
+		setShowAmountEditor(false); // убираем редактор 
+		if (drug.amount === inputAmount) return; // если количество не поменялось - выходим без изменений
+		dispatch(editDrug({ id: drug.id, amount: inputAmount })); // изменяем остаток
+	};
 
 	// обработчик удаления лекарства
 	const deleteHandler = (): void => {
@@ -36,12 +46,25 @@ const Drug = ({ drug }: IDrugProps): JSX.Element => {
 					</div>
 					<div className={styles.drugDescAmount}>
 						<div>
-							<span className={styles.drugDescTitle}>Остаток:</span> <span>{drug.amount} {declination(drug.amount, drug.package)}</span>
+							<span className={styles.drugDescTitle}>Остаток:</span>
+							<span> {showAmountEditor ?
+								<input type='number' min={1} value={inputAmount} onChange={e => setInputAmount(+e.target.value > 1 ? Math.round(+e.target.value) : 1)} autoFocus />
+								:
+								drug.amount} {declination(drug.amount, drug.package)}</span>
 						</div>
-						{isAuth && <div className={styles.drugControl}>
-							<FontAwesomeIcon icon={faPencil} size='sm' title='Изменить количество' style={{ cursor: 'pointer', color: colorPrimary }} />
-							<FontAwesomeIcon icon={faTrashCan} size='sm' title='Удалить лекарство' style={{ cursor: 'pointer', color: '#d72d2d' }} onClick={() => setShowAlertDialog(true)} />
-						</div>}
+						{isAuth && <>
+							{showAmountEditor ?
+								<div className={styles.drugControl}>
+									<FontAwesomeIcon icon={faCheck} size="lg" title='Сохранить' style={{ cursor: 'pointer', color: colorPrimary }} onClick={changeAmountHandler} />
+									<FontAwesomeIcon icon={faXmark} size="lg" title='Отменить' style={{ cursor: 'pointer', color: colorRed }} onClick={() => setShowAmountEditor(false)} />
+								</div>
+								:
+								<div className={styles.drugControl}>
+									<FontAwesomeIcon icon={faPencil} size='sm' title='Изменить остаток' style={{ cursor: 'pointer', color: colorPrimary }} onClick={() => setShowAmountEditor(true)} />
+									<FontAwesomeIcon icon={faTrashCan} size='sm' title='Удалить лекарство' style={{ cursor: 'pointer', color: colorRed }} onClick={() => setShowAlertDialog(true)} />
+								</div>
+							}
+						</>}
 					</div>
 
 					<div className={drug.sellBy === '-' ? styles.drugDescTitleNoSellBy : ''}>
