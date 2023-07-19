@@ -1,5 +1,5 @@
 import { FormEvent, useEffect, useState } from 'react';
-import { Autocomplete, Box, Button, Chip, FormControl, FormControlLabel, InputLabel, MenuItem, OutlinedInput, Radio, RadioGroup, Select, SelectChangeEvent, TextField } from '@mui/material';
+import { Autocomplete, Button, Chip, FormControl, FormControlLabel, Radio, RadioGroup, TextField } from '@mui/material';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import { addDrug, selectAddDrugStatus } from '../../store/drugSlice';
 import { categoriesOfDrugs, packagesOfDrugs, typesOfDrugs } from '../../constants/drugs';
@@ -53,12 +53,6 @@ const FormDrugAddition = ({ showFormDrugAddition, setShowFormDrugAddition }: IFo
 			categories,
 			sellBy: typeSellBy === 'undefined' ? '-' : typeSellBy === 'withoutDay' ? convertToFullDate(sellByWithoutDay) : sellByFullDate
 		}));
-	};
-
-	// обработчик выбора категорий
-	const handleChange = (event: SelectChangeEvent<typeof categories>) => {
-		const { target: { value } } = event;
-		setCategories(typeof value === 'string' ? value.split(',') : value);
 	};
 
 	return (
@@ -116,82 +110,77 @@ const FormDrugAddition = ({ showFormDrugAddition, setShowFormDrugAddition }: IFo
 							/>
 						</div>
 					</FormControl>
-					<FormControl fullWidth margin='dense' size="small">
-						{/* <Autocomplete
-								id="categories"
-								freeSolo
-								options={categoriesOfDrugs}
-								size="small"
-								value={categories[0]} // на доработку
-								onChange={(_, value) => value && setCategories(prev => [...prev, prev[0] = value])} // на доработку
-								renderInput={(params) => <TextField {...params} required label="Категории" color='success' onChange={e => setCategories(e.target.value)} />}
-								sx={{ width: '100%' }}
-							/> */}
-						<InputLabel id="categories-label" color='success'>Категории</InputLabel>
-						<Select
-							required
-							labelId="categories-label"
-							id="categories"
+					<FormControl fullWidth margin='dense'>
+						<Autocomplete
 							multiple
-							color='success'
+							disableCloseOnSelect
+							id="categories"
+							options={categoriesOfDrugs}
+							freeSolo
+							size="small"
 							value={categories}
-							onChange={e => handleChange(e)}
-							input={<OutlinedInput id="categories-chip" label="Категории" />}
-							renderValue={(selected) => (
-								<Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
-									{selected.map((value) => (
-										<Chip key={value} label={value} />
-									))}
-								</Box>
+							onChange={(_, value) => value && setCategories(value)}
+							renderTags={(value: readonly string[], getTagProps) =>
+								value.map((option: string, index: number) => (
+									<Chip variant="outlined" label={option} {...getTagProps({ index })} />
+								))
+							}
+							renderInput={(params) => (
+								<TextField
+									{...params}
+									required
+									color='success'
+									label="Категории"
+									inputProps={{
+										...params.inputProps,
+										required: categories.length === 0
+									}} />
 							)}
-						>
-							{categoriesOfDrugs.map((category) => (
-								<MenuItem key={category} value={category}>{category}</MenuItem>
-							))}
-						</Select>
+						/>
 					</FormControl>
-					{typeSellBy === 'withoutDay' &&
-						<FormControl fullWidth margin='dense'>
-							<TextField
-								required
-								id="sellBy"
-								label="Срок годности"
-								variant="outlined"
-								size="small"
-								type='month'
-								color='success'
-								value={sellByWithoutDay}
-								onChange={e => setSellByWithoutDay(e.target.value)}
-								inputProps={{ min: '1990-01', max: `${new Date().getFullYear() + 5}-12` }}
-							/>
-						</FormControl>
-					}
-					{typeSellBy === 'fullDate' &&
-						<FormControl fullWidth margin='dense'>
-							<TextField
-								required
-								id="sellBy"
-								label="Срок годности"
-								variant="outlined"
-								size="small"
-								type='date'
-								color='success'
-								value={sellByFullDate}
-								onChange={e => setSellByFullDate(e.target.value)}
-								inputProps={{ min: '1990-01-01', max: `${new Date().getFullYear() + 5}-12-31` }}
-							/>
-						</FormControl>
-					}
-					<RadioGroup
-						name="radio-buttons-group"
-						defaultValue="withoutDay"
-						value={typeSellBy}
-						onChange={e => setTypeSellBy(e.target.value as SellBy)}
-					>
-						<FormControlLabel value="withoutDay" control={<Radio size="small" color="success" />} label="Не указан день" />
-						<FormControlLabel value="fullDate" control={<Radio size="small" color="success" />} label="Полная дата" />
-						<FormControlLabel value="undefined" control={<Radio size="small" color="success" />} label="Невозможно определить срок годности" />
-					</RadioGroup>
+					<div className={styles.sellByWrapper}>
+						<div className={styles.sellByWrapperLabel}>Срок годности *</div>
+						{typeSellBy === 'withoutDay' &&
+							<FormControl fullWidth margin='dense'>
+								<TextField
+									required
+									id="sellBy"
+									variant="outlined"
+									size="small"
+									type='month'
+									color='success'
+									value={sellByWithoutDay}
+									onChange={e => setSellByWithoutDay(e.target.value)}
+									inputProps={{ min: '1990-01', max: `${new Date().getFullYear() + 5}-12` }}
+								/>
+							</FormControl>
+						}
+						{typeSellBy === 'fullDate' &&
+							<FormControl fullWidth margin='dense'>
+								<TextField
+									required
+									id="sellBy"
+									variant="outlined"
+									size="small"
+									type='date'
+									color='success'
+									value={sellByFullDate}
+									onChange={e => setSellByFullDate(e.target.value)}
+									inputProps={{ min: '1990-01-01', max: `${new Date().getFullYear() + 5}-12-31` }}
+								/>
+							</FormControl>
+						}
+						<RadioGroup
+							name="radio-buttons-group"
+							defaultValue="withoutDay"
+							value={typeSellBy}
+							onChange={e => setTypeSellBy(e.target.value as SellBy)}
+						>
+							<FormControlLabel value="withoutDay" control={<Radio size="small" color="success" />} label="Не указан день" />
+							<FormControlLabel value="fullDate" control={<Radio size="small" color="success" />} label="Полная дата" />
+							<FormControlLabel value="undefined" control={<Radio size="small" color="success" />} label="Невозможно определить" />
+						</RadioGroup>
+					</div>
 					<FormControl fullWidth margin='dense'>
 						{addDrugStatus === 'loading' ?
 							<Button variant="outlined" type="submit" disabled>

@@ -1,6 +1,26 @@
+@import '../../styles/variables.scss';
+
 .amountWrapper {
 	display: flex;
 	gap: 10px;
+}
+
+.sellByWrapper {
+	margin: 8px 0 4px;
+	padding: 10px;
+	border: 1px solid $colorSecondary;
+	border-radius: 4px;
+	position: relative;
+
+	&Label {
+		position: absolute;
+		top: -10px;
+		left: 8px;
+		padding: 0 5px;
+		background-color: #fff;
+		color: $colorSecondary;
+		font-size: 12px;
+	}
 }
 
 .error {
