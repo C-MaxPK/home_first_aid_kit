@@ -39,4 +39,5 @@ export interface IDrugState {
 	sort: ActiveSortType;
 	fetchStatus: Status;
 	addDrugStatus: Status;
+	deleteDrugStatus: Status;
 }

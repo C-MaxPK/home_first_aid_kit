@@ -3,7 +3,7 @@ import { InputAdornment, TextField } from '@mui/material';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faMagnifyingGlass, faXmark } from '@fortawesome/free-solid-svg-icons';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
-import { addSearchValue, changeSort, clearFilterList, selectFilterList, selectSortType } from '../../store/drugSlice';
+import { addSearchValue, changeSort, clearFilterList, selectAddDrugStatus, selectDeleteDrugStatus, selectFilterList, selectSortType } from '../../store/drugSlice';
 
 const Search = (): JSX.Element => {
 	const [inputValue, setInputValue] = useState<string>(''); // строка поиска input
@@ -12,6 +12,13 @@ const Search = (): JSX.Element => {
 	const dispatch = useAppDispatch();
 	const filterList = useAppSelector(selectFilterList); // store - списки пунктов для фильтрации
 	const sortType = useAppSelector(selectSortType); // store - тип сортировки
+	const addDrugStatus = useAppSelector(selectAddDrugStatus); // store - статус добавления лекарства
+	const deleteDrugStatus = useAppSelector(selectDeleteDrugStatus); // store - статус удаления лекарства
+
+	// следим за статусами добавления и удаления лекарств и очищаем поле
+	useEffect(() => {
+		(addDrugStatus === 'loading' || deleteDrugStatus === 'loading') && setInputValue('');
+	}, [addDrugStatus, deleteDrugStatus]);
 
 	// следим за input'ом
 	useEffect(() => {

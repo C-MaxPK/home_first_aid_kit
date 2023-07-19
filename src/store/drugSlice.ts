@@ -15,6 +15,7 @@ const initialState: IDrugState = {
   sort: 'default',
   fetchStatus: 'idle', // статус загрузки лекарств из БД
   addDrugStatus: 'idle', // статус добавления лекарства в БД
+  deleteDrugStatus: 'idle', // статус удаления лекарства в БД
 };
 
 // получение лекарств из БД firebase
@@ -50,6 +51,7 @@ export const addDrug = createAsyncThunk(
       dispatch(changeStatusAddDrug('idle'));
       dispatch(fetchDrugList());
     } catch (e) {
+      console.log('Ошибка добавления', e);
       dispatch(changeStatusAddDrug('failed'));
     }
   }
@@ -68,7 +70,7 @@ export const editDrug = createAsyncThunk(
       }, { merge: true });
       dispatch(fetchDrugList());
     } catch (e) {
-      console.log('Ошибка редактирования', e)
+      console.log('Ошибка редактирования', e);
     }
   }
 );
@@ -77,8 +79,14 @@ export const editDrug = createAsyncThunk(
 export const deleteDrug = createAsyncThunk(
   '@@drug/deleteDrug',
   async (id: string, { dispatch }) => {
-    await deleteDoc(doc(db, "drugs", id));
-    dispatch(fetchDrugList());
+    try {
+      await deleteDoc(doc(db, "drugs", id));
+      dispatch(changeStatusDeleteDrug('idle'));
+      dispatch(fetchDrugList());
+    } catch (e) {
+      console.log('Ошибка удаления', e);
+      dispatch(changeStatusDeleteDrug('failed'));
+    }
   }
 );
 
@@ -110,6 +118,10 @@ export const drugSlice = createSlice({
     changeStatusAddDrug: (state, action: PayloadAction<Status>) => {
       state.addDrugStatus = action.payload;
     },
+    // изменение статуса удаления лекарства
+    changeStatusDeleteDrug: (state, action: PayloadAction<Status>) => {
+      state.deleteDrugStatus = action.payload;
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -125,11 +137,14 @@ export const drugSlice = createSlice({
       })
       .addCase(addDrug.pending, (state) => {
         state.addDrugStatus = 'loading';
+      })
+      .addCase(deleteDrug.pending, (state) => {
+        state.deleteDrugStatus = 'loading';
       });
   },
 });
 
-export const { clearFilterList, addSearchValue, addFilterListByAction, addFilterListByType, changeSort, changeStatusAddDrug } = drugSlice.actions;
+export const { clearFilterList, addSearchValue, addFilterListByAction, addFilterListByType, changeSort, changeStatusAddDrug, changeStatusDeleteDrug } = drugSlice.actions;
 
 export const selectDrugState = (state: RootState) => state.drug;
 export const selectDrugList = (state: RootState) => state.drug.drugList;
@@ -138,6 +153,7 @@ export const selectFilterList = (state: RootState) => state.drug.filterList;
 export const selectSortType = (state: RootState) => state.drug.sort;
 export const selectFetchStatus = (state: RootState) => state.drug.fetchStatus;
 export const selectAddDrugStatus = (state: RootState) => state.drug.addDrugStatus;
+export const selectDeleteDrugStatus = (state: RootState) => state.drug.deleteDrugStatus;
 export const selectVisibleDrugs = (state: RootState, onlySearch?: boolean) => {
   // список фильтрованных лекарств по поиску
   const visibleDrugsOnSearch = state.drug.drugList.filter(drug => drug.name?.toLowerCase().includes(state.drug.search.toLowerCase()));
