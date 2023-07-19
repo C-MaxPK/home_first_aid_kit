@@ -37,14 +37,16 @@ const Drugs = (): JSX.Element => {
 				</p>
 			}
 
-			<div className={styles.drugs}>
-				{visibleDrugs
-					.sort(sorting)
-					.map(drug => (
-						<Drug key={drug.createdAt} drug={drug} />
-					))
-				}
-			</div>
+			{fetchStatus === 'idle' &&
+				<div className={styles.drugs}>
+					{visibleDrugs
+						.sort(sorting)
+						.map(drug => (
+							<Drug key={drug.createdAt} drug={drug} />
+						))
+					}
+				</div>
+			}
 		</div>
 	);
 };

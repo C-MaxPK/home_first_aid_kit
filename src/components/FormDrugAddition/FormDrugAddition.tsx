@@ -95,7 +95,7 @@ const FormDrugAddition = ({ showFormDrugAddition, setShowFormDrugAddition }: IFo
 								color='success'
 								value={amount}
 								onChange={e => setAmount(+e.target.value)}
-								inputProps={{ min: 1 }}
+								inputProps={{ min: 1, max: 100 }}
 								sx={{ width: '50%' }}
 							/>
 							<Autocomplete
