@@ -6,3 +6,5 @@ export interface IRowTable {
 	sellBy: string;
 	overdue: string;
 }
+
+export type SellBy = 'withoutDay' | 'fullDate' | 'undefined';
