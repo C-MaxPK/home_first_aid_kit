@@ -13,8 +13,8 @@ const Drugs = (): JSX.Element => {
 	// сортировка
 	const sorting = (a: IDrug, b: IDrug): 1 | 0 | -1 => {
 		if (sortType === 'default') {
-			if (a.createdAt > b.createdAt) return 1;
-			else if (a.createdAt < b.createdAt) return -1;
+			if (Date.parse(a.createdAt) > Date.parse(b.createdAt)) return 1;
+			else if (Date.parse(a.createdAt) < Date.parse(b.createdAt)) return -1;
 		} else {
 			if (a.name > b.name) return sortType === 'asc' ? 1 : -1;
 			else if (a.name < b.name) return sortType === 'asc' ? -1 : 1;
