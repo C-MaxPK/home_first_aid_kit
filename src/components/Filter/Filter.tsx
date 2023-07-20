@@ -81,7 +81,7 @@ const Filter = ({ title, thisFilterListLength, otherFilterListLength, addFilterL
 						<li key={item} className={styles.formFiltersItem}>
 							<label className={styles.formFiltersLabel}>
 								<input type="checkbox" id={item} {...register('filter', { onChange: (e) => changeHandler(e) })} />
-								{item.toLowerCase()}
+								<p className={styles.formFiltersLabelDesc}>{item.toLowerCase()}</p>
 							</label>
 						</li>
 					))}

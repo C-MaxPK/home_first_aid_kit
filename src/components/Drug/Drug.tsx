@@ -80,7 +80,7 @@ const Drug = ({ drug }: IDrugProps): JSX.Element => {
 										:
 										drug.amount
 								}
-								<p>{declination(drug.amount, drug.package)}</p>
+								<p className={styles.drugDescAmountPackage}>{declination(drug.amount, drug.package)}</p>
 							</div>
 						</div>
 

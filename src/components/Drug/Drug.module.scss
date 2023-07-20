@@ -7,7 +7,7 @@
 	position: relative;
 
 	@media (max-width: 535px) {
-		width: 375px;
+		width: 355px;
 	}
 
 	&NoSellBy {
@@ -37,11 +37,13 @@
 		&Name {
 			color: $colorPrimary;
 			text-align: center;
+			word-wrap: break-word;
 		}
 
 		&Type {
 			color: $colorSecondary;
 			text-align: right;
+			word-wrap: break-word;
 		}
 
 		&Title {
@@ -53,25 +55,33 @@
 		}
 
 		&Amount {
+			max-width: 100%;
 			display: flex;
 			justify-content: space-between;
 			align-items: center;
-			gap: 5px;
 
 			&LeftBlock {
+				max-width: 84%;
 				display: flex;
 				flex-wrap: wrap;
 				gap: 4px;
 			}
 
 			&Title {
+				max-width: 100%;
 				display: flex;
+				flex-wrap: wrap;
 				gap: 4px;
 			}
 
 			&Input {
 				width: 50px;
 				outline: none;
+			}
+
+			&Package {
+				max-width: 100%;
+				word-wrap: break-word;
 			}
 		}
 
@@ -88,12 +98,14 @@
 		}
 
 		&Category {
+			max-width: 100%;
 			padding: 0 5px;
 			border: 1px solid $colorSecondary;
 			border-radius: 10px;
 			background-color: $colorThird;
 			font-size: 12px;
 			text-transform: uppercase;
+			word-wrap: break-word;
 		}
 	}
 

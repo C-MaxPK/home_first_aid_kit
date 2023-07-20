@@ -14,7 +14,7 @@ const AlertDialog = ({ showAlertDialog, setShowAlertDialog, submitHandler, name 
 			aria-labelledby="alert-dialog-title"
 			aria-describedby="alert-dialog-description"
 		>
-			<DialogTitle id="alert-dialog-title" color='error' textAlign='center'>
+			<DialogTitle id="alert-dialog-title" color='error' textAlign='center' style={{ wordWrap: 'break-word' }}>
 				Удаление лекарства "{name}"
 			</DialogTitle>
 			<DialogContent>
