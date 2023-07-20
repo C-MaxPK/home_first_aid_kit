@@ -26,6 +26,17 @@ const Drug = ({ drug }: IDrugProps): JSX.Element => {
 		dispatch(editDrug({ id: drug.id, amount: inputAmount })); // изменяем остаток
 	};
 
+	// обработчик закрытия редактора остатка
+	const closeAmountEditorHandler = (): void => {
+		setShowAmountEditor(false); // убираем редактор
+		setInputAmount(drug.amount); // возвращаем значение
+	};
+
+	// обработчик нажатия клавишы
+	const keyDownHandler = (e: React.KeyboardEvent<HTMLInputElement>): void => {
+		if (e.code === 'Escape') closeAmountEditorHandler();
+	};
+
 	// обработчик удаления лекарства
 	const deleteHandler = (): void => {
 		dispatch(deleteDrug(drug.id)); // удаляем лекарство
@@ -35,28 +46,53 @@ const Drug = ({ drug }: IDrugProps): JSX.Element => {
 	return (
 		<>
 			<div className={drug.sellBy !== '-' ? styles.drug : [styles.drug, styles.drugNoSellBy].join(' ')}>
+
 				<div className={styles.drugImg}>
 					<img src="https://via.placeholder.com/250" alt={drug.name} />
 				</div>
+
 				<div className={styles.drugDesc}>
-					<h3 className={styles.drugName}>{drug.name}</h3>
+					<h3 className={styles.drugDescName}>{drug.name}</h3>
 
 					<div className={styles.drugDescType}>
 						{drug.type}
 					</div>
+
 					<div className={styles.drugDescAmount}>
-						<div>
-							<span className={styles.drugDescTitle}>Остаток:</span>
-							<span> {showAmountEditor ?
-								<input type='number' min={1} value={inputAmount} onChange={e => setInputAmount(+e.target.value > 1 ? Math.round(+e.target.value) : 1)} autoFocus />
-								:
-								drug.amount} {declination(drug.amount, drug.package)}</span>
+						<div className={styles.drugDescAmountLeftBlock}>
+							<p className={styles.drugDescTitle}>Остаток:</p>
+							<div className={styles.drugDescAmountTitle}>
+								{
+									showAmountEditor ?
+										<form id='amount' onSubmit={changeAmountHandler}>
+											<input
+												className={styles.drugDescAmountInput}
+												type='number'
+												min={1}
+												max={100}
+												step={1}
+												value={inputAmount}
+												onChange={e => setInputAmount(+e.target.value)}
+												autoFocus
+												onKeyDown={e => keyDownHandler(e)}
+											/>
+										</form>
+										:
+										drug.amount
+								}
+								<p>{declination(drug.amount, drug.package)}</p>
+							</div>
 						</div>
+
 						{isAuth && <>
 							{showAmountEditor ?
 								<div className={styles.drugControl}>
-									<FontAwesomeIcon icon={faCheck} size="lg" title='Сохранить' style={{ cursor: 'pointer', color: colorPrimary }} onClick={changeAmountHandler} />
-									<FontAwesomeIcon icon={faXmark} size="lg" title='Отменить' style={{ cursor: 'pointer', color: colorRed }} onClick={() => setShowAmountEditor(false)} />
+									<button className={styles.drugControlBtn} type='submit' form='amount'>
+										<FontAwesomeIcon icon={faCheck} size="xl" title='Сохранить' style={{ cursor: 'pointer', color: colorPrimary }} />
+									</button>
+									<button className={styles.drugControlBtn}>
+										<FontAwesomeIcon icon={faXmark} size="xl" title='Отменить' style={{ cursor: 'pointer', color: colorRed }} onClick={closeAmountEditorHandler} />
+									</button>
 								</div>
 								:
 								<div className={styles.drugControl}>
@@ -67,7 +103,7 @@ const Drug = ({ drug }: IDrugProps): JSX.Element => {
 						</>}
 					</div>
 
-					<div className={drug.sellBy === '-' ? styles.drugDescTitleNoSellBy : ''}>
+					<div className={drug.sellBy === '-' ? styles.drugDescNoSellBy : ''}>
 						<span className={styles.drugDescTitle}>Годен до:</span> {drug.sellBy}
 					</div>
 
@@ -76,9 +112,11 @@ const Drug = ({ drug }: IDrugProps): JSX.Element => {
 							<div className={styles.drugDescCategory} key={category}>{category} </div>
 						))}
 					</div>
-				</div>
+				</div >
+
 				{getOverdueDrug(drug.sellBy) && <div className={styles.drugSignOverdue}>Просрочено</div>}
-			</div>
+
+			</div >
 
 			<AlertDialog showAlertDialog={showAlertDialog} setShowAlertDialog={setShowAlertDialog} submitHandler={deleteHandler} name={drug.name} />
 		</>

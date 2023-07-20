@@ -34,23 +34,45 @@
 	&Desc {
 		margin: 10px;
 
+		&Name {
+			color: $colorPrimary;
+			text-align: center;
+		}
+
+		&Type {
+			color: $colorSecondary;
+			text-align: right;
+		}
+
 		&Title {
 			font-weight: bold;
+		}
 
-			&NoSellBy {
-				color: $colorWarning;
-			}
+		&NoSellBy {
+			color: $colorWarning;
 		}
 
 		&Amount {
 			display: flex;
 			justify-content: space-between;
 			align-items: center;
-		}
+			gap: 5px;
 
-		&Type {
-			color: $colorSecondary;
-			text-align: right;
+			&LeftBlock {
+				display: flex;
+				flex-wrap: wrap;
+				gap: 4px;
+			}
+
+			&Title {
+				display: flex;
+				gap: 4px;
+			}
+
+			&Input {
+				width: 50px;
+				outline: none;
+			}
 		}
 
 		&Categories {
@@ -75,14 +97,18 @@
 		}
 	}
 
-	&Name {
-		color: $colorPrimary;
-		text-align: center;
-	}
-
 	&Control {
 		display: flex;
 		gap: 10px;
+
+		@media (max-width: 535px) {
+			gap: 20px;
+		}
+
+		&Btn {
+			border: none;
+			background-color: transparent;
+		}
 	}
 
 	&SignOverdue {
