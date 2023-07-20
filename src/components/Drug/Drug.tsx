@@ -1,12 +1,12 @@
 import { useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faCheck, faPencil, faTrashCan, faXmark } from '@fortawesome/free-solid-svg-icons';
+import { faCheck, faCircleInfo, faPencil, faTrashCan, faXmark } from '@fortawesome/free-solid-svg-icons';
 import { useAppDispatch } from '../../store/hooks';
 import useAuth from '../../hooks/useAuth';
 import { deleteDrug, editDrug } from '../../store/drugSlice';
 import { declination } from '../../helpers/declination';
 import { getOverdueDrug } from '../../helpers/overdue';
-import { colorPrimary, colorRed } from '../../constants/colors';
+import { colorPrimary, colorRed, colorSecondary } from '../../constants/colors';
 import AlertDialog from '../AlertDialog/AlertDialog';
 import { IDrugProps } from './Drug.props';
 import styles from './Drug.module.scss';
@@ -46,6 +46,24 @@ const Drug = ({ drug }: IDrugProps): JSX.Element => {
 	return (
 		<>
 			<div className={drug.sellBy !== '-' ? styles.drug : [styles.drug, styles.drugNoSellBy].join(' ')}>
+
+				{isAuth &&
+					<div className={styles.drugInfo}>
+						<FontAwesomeIcon icon={faCircleInfo} color={colorSecondary} />
+						<div className={styles.drugInfoBlock}>
+							<p>
+								<span className={styles.drugInfoTitle}>Создано: </span>
+								{new Date(drug.createdAt).toLocaleDateString()} {new Date(drug.createdAt).toLocaleTimeString()} ({drug.creator})
+							</p>
+							{drug.editedAt &&
+								<p>
+									<span className={styles.drugInfoTitle}>Изменено: </span>
+									{new Date(drug.editedAt).toLocaleDateString()} {new Date(drug.editedAt).toLocaleTimeString()} ({drug.editor})
+								</p>
+							}
+						</div>
+					</div>
+				}
 
 				<div className={styles.drugImg}>
 					<img src="https://via.placeholder.com/250" alt={drug.name} />
