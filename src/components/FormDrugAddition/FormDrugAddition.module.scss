@@ -23,7 +23,12 @@
 	}
 }
 
+.uploadSuccess {
+	text-align: center;
+	color: $colorPrimary;
+}
+
 .error {
 	text-align: center;
-	color: red;
+	color: $colorDanger;
 }

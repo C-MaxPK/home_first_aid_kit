@@ -1,4 +1,5 @@
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { getDownloadURL, getStorage, ref, uploadBytesResumable } from "firebase/storage";
 import { collection, deleteDoc, doc, getDocs, setDoc } from "firebase/firestore";
 import { nanoid } from 'nanoid'
 import { RootState } from './store';
@@ -16,6 +17,13 @@ const initialState: IDrugState = {
   fetchStatus: 'idle', // статус загрузки лекарств из БД
   addDrugStatus: 'idle', // статус добавления лекарства в БД
   deleteDrugStatus: 'idle', // статус удаления лекарства в БД
+  uploadImage: {
+    drugId: '',
+    urlImg: '',
+    progress: 0,
+    error: null,
+    status: 'idle',
+  }, // загрузка изображения
 };
 
 // получение лекарств из БД firebase
@@ -31,11 +39,41 @@ export const fetchDrugList = createAsyncThunk(
   }
 );
 
+// загрузка изображения в storage firebase
+export const uploadImage = createAsyncThunk(
+  '@@drug/uploadImage',
+  async (fileImg: File, { dispatch }) => {
+    const storage = getStorage();
+    const id = nanoid();
+    const storageRef = ref(storage, `drugsImg/drug${id}.jpg`);
+    const uploadTask = uploadBytesResumable(storageRef, fileImg);
+
+    dispatch(addDrugId(id)); // добавляем id будущего лекарства
+
+    uploadTask.on('state_changed',
+      (snapshot) => {
+        const progress = Math.round((snapshot.bytesTransferred / snapshot.totalBytes) * 100);
+        dispatch(settingUploadProgress(progress)); // устанавливаем прогресс загрузки
+      },
+      (error) => {
+        dispatch(addErrorUploadImage(error.message)); // добавляем сообщение ошибки
+        dispatch(changeStatusUploadImage('failed')); // меняем статус
+      },
+      () => {
+        getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
+          dispatch(addUrlImage(downloadURL)); // добавляем url изображения
+          dispatch(changeStatusUploadImage('idle')); // меняем статус
+        });
+      }
+    );
+  }
+);
+
 // добавление лекарства в БД firebase
 export const addDrug = createAsyncThunk(
   '@@drug/addDrug',
   async ({ name, type, amount, pack, categories, sellBy }: IAddDrugProps, { dispatch, getState }) => {
-    const id = nanoid();
+    const id = (getState() as RootState).drug.uploadImage.drugId;
     try {
       await setDoc(doc(db, "drugs", id), {
         id,
@@ -45,14 +83,16 @@ export const addDrug = createAsyncThunk(
         package: pack.charAt(0).toUpperCase() + pack.slice(1),
         categories,
         sellBy,
+        imgUrl: (getState() as RootState).drug.uploadImage.urlImg,
         createdAt: new Date().toString(),
         creator: (getState() as RootState).user.email,
       });
-      dispatch(changeStatusAddDrug('idle'));
-      dispatch(fetchDrugList());
+      dispatch(changeStatusAddDrug('idle')); // меняем статус
+      dispatch(clearUploadImageData()); // очищаем данные загрузки изображения
+      dispatch(fetchDrugList()); // получаем заново список лекарств
     } catch (e) {
       console.log('Ошибка добавления', e);
-      dispatch(changeStatusAddDrug('failed'));
+      dispatch(changeStatusAddDrug('failed')); // меняем статус
     }
   }
 );
@@ -68,7 +108,7 @@ export const editDrug = createAsyncThunk(
         editedAt: new Date().toString(),
         editor: (getState() as RootState).user.email,
       }, { merge: true });
-      dispatch(fetchDrugList());
+      dispatch(fetchDrugList()); // получаем заново список лекарств
     } catch (e) {
       console.log('Ошибка редактирования', e);
     }
@@ -81,11 +121,11 @@ export const deleteDrug = createAsyncThunk(
   async (id: string, { dispatch }) => {
     try {
       await deleteDoc(doc(db, "drugs", id));
-      dispatch(changeStatusDeleteDrug('idle'));
-      dispatch(fetchDrugList());
+      dispatch(changeStatusDeleteDrug('idle')); // меняем статус
+      dispatch(fetchDrugList()); // получаем заново список лекарств
     } catch (e) {
       console.log('Ошибка удаления', e);
-      dispatch(changeStatusDeleteDrug('failed'));
+      dispatch(changeStatusDeleteDrug('failed')); // меняем статус
     }
   }
 );
@@ -97,6 +137,10 @@ export const drugSlice = createSlice({
     // очищение списков фильтров
     clearFilterList: (state) => {
       state.filterList = initialState.filterList;
+    },
+    // очищение данных загрузки изображения
+    clearUploadImageData: (state) => {
+      state.uploadImage = initialState.uploadImage;
     },
     // добавление значения строки поиска
     addSearchValue: (state, action: PayloadAction<string>) => {
@@ -113,6 +157,26 @@ export const drugSlice = createSlice({
     // выбор типа сортировки
     changeSort: (state, action: PayloadAction<ActiveSortType>) => {
       state.sort = action.payload;
+    },
+    // добавление id будущего лекарства
+    addDrugId: (state, action: PayloadAction<string>) => {
+      state.uploadImage.drugId = action.payload;
+    },
+    // установка прогресса загрузки изображения
+    settingUploadProgress: (state, action: PayloadAction<number>) => {
+      state.uploadImage.progress = action.payload;
+    },
+    // добавление сообщения ошибки
+    addErrorUploadImage: (state, action: PayloadAction<string>) => {
+      state.uploadImage.error = action.payload;
+    },
+    // добавление url изображения
+    addUrlImage: (state, action: PayloadAction<string>) => {
+      state.uploadImage.urlImg = action.payload;
+    },
+    // изменение статуса загрузки изображения
+    changeStatusUploadImage: (state, action: PayloadAction<Status>) => {
+      state.uploadImage.status = action.payload;
     },
     // изменение статуса добавления лекарства
     changeStatusAddDrug: (state, action: PayloadAction<Status>) => {
@@ -138,13 +202,16 @@ export const drugSlice = createSlice({
       .addCase(addDrug.pending, (state) => {
         state.addDrugStatus = 'loading';
       })
+      .addCase(uploadImage.pending, (state) => {
+        state.uploadImage.status = 'loading';
+      })
       .addCase(deleteDrug.pending, (state) => {
         state.deleteDrugStatus = 'loading';
       });
   },
 });
 
-export const { clearFilterList, addSearchValue, addFilterListByAction, addFilterListByType, changeSort, changeStatusAddDrug, changeStatusDeleteDrug } = drugSlice.actions;
+export const { clearFilterList, clearUploadImageData, addSearchValue, addFilterListByAction, addFilterListByType, changeSort, addDrugId, settingUploadProgress, addErrorUploadImage, addUrlImage, changeStatusUploadImage, changeStatusAddDrug, changeStatusDeleteDrug } = drugSlice.actions;
 
 export const selectDrugState = (state: RootState) => state.drug;
 export const selectDrugList = (state: RootState) => state.drug.drugList;
@@ -154,6 +221,7 @@ export const selectSortType = (state: RootState) => state.drug.sort;
 export const selectFetchStatus = (state: RootState) => state.drug.fetchStatus;
 export const selectAddDrugStatus = (state: RootState) => state.drug.addDrugStatus;
 export const selectDeleteDrugStatus = (state: RootState) => state.drug.deleteDrugStatus;
+export const selectUploadImage = (state: RootState) => state.drug.uploadImage;
 export const selectVisibleDrugs = (state: RootState, onlySearch?: boolean) => {
   // список фильтрованных лекарств по поиску
   const visibleDrugsOnSearch = state.drug.drugList.filter(drug => drug.name?.toLowerCase().includes(state.drug.search.toLowerCase()));

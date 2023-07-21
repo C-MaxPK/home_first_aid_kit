@@ -66,7 +66,7 @@ const Drug = ({ drug }: IDrugProps): JSX.Element => {
 				}
 
 				<div className={styles.drugImg}>
-					<img src="https://via.placeholder.com/250" alt={drug.name} />
+					<img src={drug.imgUrl ?? "https://via.placeholder.com/250"} alt={drug.name} />
 				</div>
 
 				<div className={styles.drugDesc}>

@@ -1,11 +1,12 @@
-import { FormEvent, useEffect, useState } from 'react';
+import { ChangeEvent, FormEvent, useEffect, useState } from 'react';
 import { Autocomplete, Button, Chip, FormControl, FormControlLabel, Radio, RadioGroup, TextField } from '@mui/material';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
-import { addDrug, selectAddDrugStatus } from '../../store/drugSlice';
+import { addDrug, clearUploadImageData, selectAddDrugStatus, selectUploadImage, uploadImage } from '../../store/drugSlice';
 import { categoriesOfDrugs, packagesOfDrugs, typesOfDrugs } from '../../constants/drugs';
 import { convertToFullDate } from '../../helpers/convertToFullDate';
 import { SellBy } from '../../types/types';
 import ModalWindow from '../../HOK/ModalWindow/ModalWindow';
+import ProgressLinear from '../ProgressLinear/ProgressLinear';
 import { IFormDrugAdditionProps } from './FormDrugAddition.props';
 import styles from './FormDrugAddition.module.scss';
 
@@ -21,9 +22,11 @@ const FormDrugAddition = ({ showFormDrugAddition, setShowFormDrugAddition }: IFo
 	const [sellByWithoutDay, setSellByWithoutDay] = useState<string>(currentDateWithoutDay); // срок годности (без дня)
 	const [sellByFullDate, setSellByFullDate] = useState<string>(currentFullDate); // срок годности (полная дата)
 	const [typeSellBy, setTypeSellBy] = useState<SellBy>('withoutDay'); // тип срока годности
+	const [fileImg, setFileImg] = useState<File | null>(null); // изображение
 
 	const dispatch = useAppDispatch();
 	const addDrugStatus = useAppSelector(selectAddDrugStatus); // store - статус добавления лекарства в БД
+	const uploadImageData = useAppSelector(selectUploadImage); // store - загрузка изображения
 
 	// следим за показом формы и сбрасываем данные input'ов
 	useEffect(() => {
@@ -35,12 +38,19 @@ const FormDrugAddition = ({ showFormDrugAddition, setShowFormDrugAddition }: IFo
 		sellByWithoutDay !== currentDateWithoutDay && setSellByWithoutDay(currentDateWithoutDay);
 		sellByFullDate !== currentFullDate && setSellByFullDate(currentFullDate);
 		typeSellBy !== 'withoutDay' && setTypeSellBy('withoutDay');
+		fileImg && setFileImg(null);
+		uploadImageData.drugId.length > 0 && dispatch(clearUploadImageData()); // очищаем данные загрузки изображения, если есть
 	}, [showFormDrugAddition]);
 
 	// следим за состоянием добавления лекарства и если успешно - закрываем форму
 	useEffect(() => {
 		addDrugStatus === 'idle' && setShowFormDrugAddition(false);
 	}, [addDrugStatus]);
+
+	// следим за изображением и если выбрано - запускаем автоматически загрузку
+	useEffect(() => {
+		if (fileImg) dispatch(uploadImage(fileImg));
+	}, [fileImg]);
 
 	// обработчик отправки формы
 	const submitHandler = (e: FormEvent<HTMLFormElement>): void => {
@@ -182,12 +192,27 @@ const FormDrugAddition = ({ showFormDrugAddition, setShowFormDrugAddition }: IFo
 						</RadioGroup>
 					</div>
 					<FormControl fullWidth margin='dense'>
+						<TextField
+							required
+							id="fileImg"
+							variant="outlined"
+							size="small"
+							color='success'
+							type='file'
+							onChange={(e: ChangeEvent<HTMLInputElement>) => e.target.files && setFileImg(e.target.files[0])}
+							inputProps={{ accept: "image/*" }}
+						/>
+					</FormControl>
+					{(uploadImageData.status === 'loading' || uploadImageData.progress === 100) && <ProgressLinear value={uploadImageData.progress} />}
+					{uploadImageData.status === 'idle' && uploadImageData.progress === 100 && <p className={styles.uploadSuccess}>Изображение загружено</p>}
+					{uploadImageData.status === 'failed' && <p className={styles.error}>Ошибка загрузки изображения: {uploadImageData.error}</p>}
+					<FormControl fullWidth margin='dense'>
 						{addDrugStatus === 'loading' ?
 							<Button variant="outlined" type="submit" disabled>
 								Добавление...
 							</Button>
 							:
-							<Button variant="outlined" type="submit" color='success'>
+							<Button variant="outlined" type="submit" color='success' disabled={uploadImageData.status === 'loading'}>
 								Добавить
 							</Button>
 						}

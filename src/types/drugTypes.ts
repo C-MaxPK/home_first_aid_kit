@@ -20,6 +20,7 @@ export interface IDrug {
 	package: string;
 	categories: string[];
 	sellBy: string;
+	imgUrl: string;
 	createdAt: string;
 	creator: string;
 	editedAt?: string;
@@ -40,4 +41,11 @@ export interface IDrugState {
 	fetchStatus: Status;
 	addDrugStatus: Status;
 	deleteDrugStatus: Status;
+	uploadImage: {
+		drugId: string;
+		urlImg: string;
+		progress: number;
+		error: null | string;
+		status: Status;
+	};
 }
