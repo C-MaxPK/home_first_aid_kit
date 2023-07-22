@@ -1,5 +1,5 @@
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { getDownloadURL, getStorage, ref, uploadBytesResumable } from "firebase/storage";
+import { deleteObject, getDownloadURL, getStorage, ref, uploadBytesResumable } from "firebase/storage";
 import { collection, deleteDoc, doc, getDocs, setDoc } from "firebase/firestore";
 import { nanoid } from 'nanoid'
 import { RootState } from './store';
@@ -45,7 +45,7 @@ export const uploadImage = createAsyncThunk(
   async (fileImg: File, { dispatch }) => {
     const storage = getStorage();
     const id = nanoid();
-    const storageRef = ref(storage, `drugsImg/drug${id}.jpg`);
+    const storageRef = ref(storage, `drugsImage/drug${id}.jpg`);
     const uploadTask = uploadBytesResumable(storageRef, fileImg);
 
     dispatch(addDrugId(id)); // добавляем id будущего лекарства
@@ -69,6 +69,21 @@ export const uploadImage = createAsyncThunk(
   }
 );
 
+// удаление изображения из storage firebase
+export const deleteImage = createAsyncThunk(
+  '@@drug/deleteImage',
+  async (id: string) => {
+    const storage = getStorage();
+    const desertRef = ref(storage, `drugsImage/drug${id}.jpg`);
+
+    deleteObject(desertRef).then(() => {
+      console.log('Изображение удалено');
+    }).catch((error) => {
+      console.log('Изображение не удалилось:', error);
+    });
+  }
+);
+
 // добавление лекарства в БД firebase
 export const addDrug = createAsyncThunk(
   '@@drug/addDrug',
@@ -87,11 +102,11 @@ export const addDrug = createAsyncThunk(
         createdAt: new Date().toString(),
         creator: (getState() as RootState).user.email,
       });
-      dispatch(changeStatusAddDrug('idle')); // меняем статус
       dispatch(clearUploadImageData()); // очищаем данные загрузки изображения
+      dispatch(changeStatusAddDrug('idle')); // меняем статус
       dispatch(fetchDrugList()); // получаем заново список лекарств
     } catch (e) {
-      console.log('Ошибка добавления', e);
+      console.log('Ошибка добавления лекарства:', e);
       dispatch(changeStatusAddDrug('failed')); // меняем статус
     }
   }
@@ -110,7 +125,7 @@ export const editDrug = createAsyncThunk(
       }, { merge: true });
       dispatch(fetchDrugList()); // получаем заново список лекарств
     } catch (e) {
-      console.log('Ошибка редактирования', e);
+      console.log('Ошибка редактирования лекарства:', e);
     }
   }
 );
@@ -121,10 +136,11 @@ export const deleteDrug = createAsyncThunk(
   async (id: string, { dispatch }) => {
     try {
       await deleteDoc(doc(db, "drugs", id));
+      dispatch(deleteImage(id)); // удаляем изображение из storage firebase
       dispatch(changeStatusDeleteDrug('idle')); // меняем статус
       dispatch(fetchDrugList()); // получаем заново список лекарств
     } catch (e) {
-      console.log('Ошибка удаления', e);
+      console.log('Лекарство не удалилось:', e);
       dispatch(changeStatusDeleteDrug('failed')); // меняем статус
     }
   }

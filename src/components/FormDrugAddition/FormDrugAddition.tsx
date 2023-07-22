@@ -1,7 +1,7 @@
 import { ChangeEvent, FormEvent, useEffect, useState } from 'react';
 import { Autocomplete, Button, Chip, FormControl, FormControlLabel, Radio, RadioGroup, TextField } from '@mui/material';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
-import { addDrug, clearUploadImageData, selectAddDrugStatus, selectUploadImage, uploadImage } from '../../store/drugSlice';
+import { addDrug, clearUploadImageData, deleteImage, selectAddDrugStatus, selectUploadImage, uploadImage } from '../../store/drugSlice';
 import { categoriesOfDrugs, packagesOfDrugs, typesOfDrugs } from '../../constants/drugs';
 import { convertToFullDate } from '../../helpers/convertToFullDate';
 import { SellBy } from '../../types/types';
@@ -28,8 +28,9 @@ const FormDrugAddition = ({ showFormDrugAddition, setShowFormDrugAddition }: IFo
 	const addDrugStatus = useAppSelector(selectAddDrugStatus); // store - статус добавления лекарства в БД
 	const uploadImageData = useAppSelector(selectUploadImage); // store - загрузка изображения
 
-	// следим за показом формы и сбрасываем данные input'ов
+	// следим за показом формы
 	useEffect(() => {
+		// сбрасываем данные input'ов
 		name !== '' && setName('');
 		type !== '' && setType('');
 		amount !== 1 && setAmount(1);
@@ -39,7 +40,12 @@ const FormDrugAddition = ({ showFormDrugAddition, setShowFormDrugAddition }: IFo
 		sellByFullDate !== currentFullDate && setSellByFullDate(currentFullDate);
 		typeSellBy !== 'withoutDay' && setTypeSellBy('withoutDay');
 		fileImg && setFileImg(null);
-		uploadImageData.drugId.length > 0 && dispatch(clearUploadImageData()); // очищаем данные загрузки изображения, если есть
+
+		// если есть данные загрузки изображения
+		if (uploadImageData.drugId.length > 0) {
+			dispatch(deleteImage(uploadImageData.drugId)); // удаляем изображение
+			dispatch(clearUploadImageData()); // очищаем данные
+		}
 	}, [showFormDrugAddition]);
 
 	// следим за состоянием добавления лекарства и если успешно - закрываем форму
@@ -47,9 +53,13 @@ const FormDrugAddition = ({ showFormDrugAddition, setShowFormDrugAddition }: IFo
 		addDrugStatus === 'idle' && setShowFormDrugAddition(false);
 	}, [addDrugStatus]);
 
-	// следим за изображением и если выбрано - запускаем автоматически загрузку
+	// следим за изображением 
 	useEffect(() => {
-		if (fileImg) dispatch(uploadImage(fileImg));
+		// и если выбрано
+		if (fileImg) {
+			if (uploadImageData.drugId.length > 0) dispatch(deleteImage(uploadImageData.drugId)); // удаляем изображение, если было загружено
+			dispatch(uploadImage(fileImg)); // загружаем изображение в storage firebase
+		}
 	}, [fileImg]);
 
 	// обработчик отправки формы
