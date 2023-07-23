@@ -15,6 +15,7 @@ const Drug = ({ drug }: IDrugProps): JSX.Element => {
 	const [showAlertDialog, setShowAlertDialog] = useState<boolean>(false); // показ диалогового окна об удалении лекарства
 	const [showAmountEditor, setShowAmountEditor] = useState<boolean>(false); // показ редактора остатка
 	const [inputAmount, setInputAmount] = useState<number>(drug.amount); // остаток лекарства
+	const [imageZoom, setImageZoom] = useState<boolean>(false); // увеличение изображения
 
 	const dispatch = useAppDispatch();
 	const { isAuth } = useAuth(); // hook проверки авторизации
@@ -65,7 +66,7 @@ const Drug = ({ drug }: IDrugProps): JSX.Element => {
 					</div>
 				}
 
-				<div className={styles.drugImg}>
+				<div className={imageZoom ? [styles.drugImg, styles.drugImgZoom].join(' ') : styles.drugImg} onClick={() => setImageZoom(prev => !prev)}>
 					<img src={drug.imgUrl ?? "https://via.placeholder.com/250"} alt={drug.name} />
 				</div>
 
