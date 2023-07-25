@@ -1,6 +1,7 @@
 import { useState } from 'react';
+import cn from 'classnames';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faCheck, faCircleInfo, faPencil, faTrashCan, faXmark } from '@fortawesome/free-solid-svg-icons';
+import { faArrowUpRightFromSquare, faCheck, faCircleInfo, faPencil, faTrashCan, faXmark } from '@fortawesome/free-solid-svg-icons';
 import { useAppDispatch } from '../../store/hooks';
 import useAuth from '../../hooks/useAuth';
 import { deleteDrug, editDrug } from '../../store/drugSlice';
@@ -15,6 +16,7 @@ const Drug = ({ drug }: IDrugProps): JSX.Element => {
 	const [showAlertDialog, setShowAlertDialog] = useState<boolean>(false); // показ диалогового окна об удалении лекарства
 	const [showAmountEditor, setShowAmountEditor] = useState<boolean>(false); // показ редактора остатка
 	const [inputAmount, setInputAmount] = useState<number>(drug.amount); // остаток лекарства
+	const [showMoreInfo, setShowMoreInfo] = useState<boolean>(false); // показ полной информации
 
 	const dispatch = useAppDispatch();
 	const { isAuth } = useAuth(); // hook проверки авторизации
@@ -45,12 +47,19 @@ const Drug = ({ drug }: IDrugProps): JSX.Element => {
 
 	return (
 		<>
-			<div className={drug.sellBy !== '-' ? styles.drug : [styles.drug, styles.drugNoSellBy].join(' ')}>
+			<div className={cn(styles.drug, {
+				[styles.drugNoSellBy]: drug.sellBy === '-',
+			})}>
 
 				{isAuth &&
 					<div className={styles.drugInfo}>
-						<FontAwesomeIcon icon={faCircleInfo} color={colorSecondary} />
-						<div className={styles.drugInfoBlock}>
+						<div className={styles.drugInfoIcon}>
+							<FontAwesomeIcon icon={faCircleInfo} color={colorSecondary} />
+						</div>
+						<div className={showMoreInfo ? styles.drugInfoBlockMobile : styles.drugInfoBlock}>
+							<p>
+								<span className={styles.drugInfoTitle}>ID: </span>{drug.id}
+							</p>
 							<p>
 								<span className={styles.drugInfoTitle}>Создано: </span>
 								{new Date(drug.createdAt).toLocaleDateString()} {new Date(drug.createdAt).toLocaleTimeString()} ({drug.creator})
@@ -65,7 +74,15 @@ const Drug = ({ drug }: IDrugProps): JSX.Element => {
 					</div>
 				}
 
-				<div className={styles.drugImg}>
+				<div className={styles.drugFullInfoIcon} onClick={() => setShowMoreInfo(prev => !prev)}>
+					{showMoreInfo ?
+						<FontAwesomeIcon icon={faXmark} size="xl" color={colorSecondary} title='Спрятать' />
+						:
+						<FontAwesomeIcon icon={faArrowUpRightFromSquare} color={colorSecondary} title='Показать больше' />
+					}
+				</div>
+
+				<div className={styles.drugImg} style={showMoreInfo ? { display: 'flex' } : {}}>
 					<img src={drug.imgUrl ?? "https://via.placeholder.com/250x150"} alt={drug.name} />
 				</div>
 
@@ -134,7 +151,7 @@ const Drug = ({ drug }: IDrugProps): JSX.Element => {
 
 				{getOverdueDrug(drug.sellBy) && <div className={styles.drugSignOverdue}>Просрочено</div>}
 
-			</div >
+			</div>
 
 			<AlertDialog showAlertDialog={showAlertDialog} setShowAlertDialog={setShowAlertDialog} submitHandler={deleteHandler} name={drug.name} />
 		</>
